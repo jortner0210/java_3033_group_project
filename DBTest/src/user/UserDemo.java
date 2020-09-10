@@ -50,6 +50,12 @@ public class UserDemo {
 		// Login with new password
 		joshO.login("password3");
 		
+		// Finally, let's remove the users we just added for demonstration
+		
+		DBUser.removeUser("jortner");
+		DBUser.removeUser("jlafever");
+		displayUsers();
+		
 		
 	}
 	
