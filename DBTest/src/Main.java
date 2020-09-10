@@ -18,6 +18,39 @@ public class Main {
 
 	public static void main(String[] args) throws SQLException  {
 		
+		
+		
+		
+		//User admin = DBUser.getUser("admin");
+		//admin.login("admin");
+		/*User josh = new User("Josh", "LaFever", "jlafever", false);
+		josh.insertIntoDatabase("password");
+		josh.login("password");
+		System.out.println("Josh is logged in: " + josh.isLoggedIn());*/
+		//DBUser.changePassword(admin, "jlafever", "password2");
+		
+		
+		
+		
+		/*String fn = "First";
+		String ln = "Last";
+		String username = "username";
+		String password = "password";
+		boolean isAdmin = false;
+		
+		User testUser = new User(fn, ln, username, isAdmin);
+		testUser.display();
+		
+		testUser.insertIntoDatabase(password);
+		testUser.login(password);
+		testUser.display();
+		testUser.logOut();
+		testUser.display();
+		System.out.println("User 2\n");
+		
+		User testUser2 = User.login(username, password);
+		testUser2.display();*/
+		/*
 		// Here is a quick test to show you a few of the functionalities we have so far
 		
 		// Let's first create a user
@@ -58,7 +91,7 @@ public class Main {
 		 * that gives a user, but we can check that we have the correct credentials
 		 */
 		// One more time let's null out this object to demonstrate
-		josh = new User();
+		/*josh = new User();
 		System.out.println("Empty again.");
 		josh.display();
 		System.out.println();
@@ -79,7 +112,7 @@ public class Main {
 		else {
 			System.out.println("Unsuccessful login.");
 		}
-		
+		*/
 		// NOTE - When I logged in, using an empty object, it automatically populated the current object
 	}
 

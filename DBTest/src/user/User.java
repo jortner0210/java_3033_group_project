@@ -15,6 +15,7 @@ public class User {
 	private String lastName = null;
 	private String userName = null;
 	private boolean admin = false;
+	private boolean loggedIn = false;
 	
 	/* 
 	 * Can start out as empty; this will be used when we want to populate an object from information 
@@ -46,56 +47,40 @@ public class User {
 		admin = _admin;
 	}
 	
-	// Login user
-	public boolean login(String username, String password) throws SQLException {
-		DBUser db = new DBUser();
-		Connection conn = db.connect(db.DATABASE);
-		
-		// Find username in database and save salt
-		String query = "SELECT * FROM USERS WHERE USERNAME = '" + username + "'";
-		PreparedStatement statement;
-		statement = conn.prepareStatement(query);
-		ResultSet rs = statement.executeQuery();
-		
-		// Get the salt associated with the username
-		if(!rs.next()) {
-			System.out.println("TESTING -- username not found");
+	public boolean login(String password) {
+		if(DBUser.verifyCredentials(this.userName, password)) {
+			this.loggedIn = true;
+			return true;
+		} else {
 			return false;
 		}
-		byte[] salt = rs.getBytes("salt");
-		this.setUser(rs.getString("first_name"), rs.getString("last_name"), rs.getString("username"), rs.getBoolean("admin"));
-		Password pw = new Password();
-		
-		// New query that searches for both username and password
-		query = "SELECT * FROM USERS WHERE USERNAME = + '" + username + "' AND PASSWORD = ?";
-		statement = conn.prepareStatement(query);
-		// Make new hashed password to compare
-		byte[] hashed = pw.hash(password.toCharArray(), salt);
-		InputStream pass = new ByteArrayInputStream(hashed);
-		statement.setBinaryStream(1, pass, hashed.length);
-		rs = statement.executeQuery();
-		
-		if(rs.next()) {
-			return true;
-		} 
-		
-		return false;
-		
 	}
-
-	// Insert a user into the database from an existing object; requires password
-	public void insertUserIntoDatabase(String password) {
+	
+	/*
+	public static User login(String username, String password) {
+		if(DBUser.verifyCredentials(username, password)) {
+			User user = DBUser.getUser(username);
+			user.loggedIn = true;
+			return user;
+		} else {
+			return null;
+		}
+	}*/
+	
+	public void insertIntoDatabase(String password) {
 		if(this.firstName == null || this.lastName == null || this.userName == null) {
 			System.out.println("User is missing information.");
 			return;
 		}
-		DBUser db = new DBUser();
-		Password pw = new Password();
-		byte[] salt = pw.getNextSalt();
-		byte[] hashed = pw.hash(password.toCharArray(), salt);
-		db.insertUser(firstName, lastName, userName, hashed, salt, admin ? 1 : 0);
 		
+		// Get salt and hash the password
+		byte[] salt = Password.getNextSalt();
+		byte[] hashed = Password.hash(password.toCharArray(), salt);
+		
+		// Insert into database
+		DBUser.insertUser(this, hashed, salt);
 	}
+	
 	
 	
 	// Testing method for displaying info about a user
@@ -104,6 +89,7 @@ public class User {
 		System.out.println("Last name: " + lastName);
 		System.out.println("Username: " + userName);
 		System.out.println("Admin: " + admin);
+		System.out.println("Currently logged in: " + loggedIn);
 	}
 	
 	// Getters and setters
@@ -146,6 +132,13 @@ public class User {
 	
 	public boolean isAdmin() {
 		return this.admin;
+	}
+	
+	public void logOut() {
+		this.loggedIn = false;
+	}
+	public boolean isLoggedIn() {
+		return this.loggedIn;
 	}
 	
 	
