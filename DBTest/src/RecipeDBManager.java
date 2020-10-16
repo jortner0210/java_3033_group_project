@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.*;
 
 public class RecipeDBManager {
 	
@@ -93,12 +94,7 @@ public class RecipeDBManager {
 		return 0;
 	}
 	
-	/*
-	 * Returns a list of ingredients in desire recipe
-	 */
-	public Ingredient[] get_ingredients( int id, String recipe_name ) {
-		return new Ingredient[1];
-	}
+	
 	
 	/*
 	 * Returns a list of all recipes with name
@@ -140,6 +136,62 @@ public class RecipeDBManager {
 			System.out.println( e );
 		}
 		return recipe_results;
+	}
+	
+	/*
+	 * Returns a list of ingredients in desire recipe
+	 */
+	public ArrayList<Ingredient> get_ingredients( int rid ) {
+		ArrayList<Ingredient> ingredients = new ArrayList<>();
+		try {
+			String contains_select = "SELECT * FROM contains WHERE rid=" + rid;
+			ResultSet contains_result = db.execute_query( contains_select );
+			
+			while( contains_result.next() ) {
+				// add contains data
+				Ingredient curr_ingredient = new Ingredient();
+				curr_ingredient.id     = contains_result.getInt( "inid" );
+				curr_ingredient.qty	   = contains_result.getInt( "qty" );
+				curr_ingredient.metric = contains_result.getString( "metric" );
+				// add ingredient data
+				String ingredient_select = "SELECT * FROM ingredient WHERE inid=" + curr_ingredient.id;
+				ResultSet ingredient_result = db.execute_query( ingredient_select );
+				
+				curr_ingredient.name	 = ingredient_result.getString( "name" );
+				curr_ingredient.category = ingredient_result.getString( "category" );
+				
+				ingredients.add( curr_ingredient );
+				
+				System.out.println( curr_ingredient );
+			}
+		}
+		catch ( Exception e ) {
+			System.out.println( e );
+		}
+		return ingredients;
+	}
+	
+	
+	public Recipe get_recipe( int id ) {
+		Recipe recipe = new Recipe();
+		try {
+			String recipe_select = "SELECT * FROM recipe WHERE rid=" + id;
+			ResultSet result = db.execute_query( recipe_select );
+			//Retrieve by column name
+	        recipe.id		= id;
+			recipe.name 	= result.getString( "name" );
+			recipe.write_up = result.getString( "write_up" );
+			recipe.ingredients = get_ingredients( id );
+	        //Display values
+	        System.out.print( "ID: " + id );
+	        System.out.print( ", Name: " + recipe.name );
+	        System.out.print( ", write_up: " + recipe.write_up + "\n" );			
+		}
+		catch ( Exception e ) {
+			System.out.println( e );
+			return null;
+		}
+		return recipe;
 	}
 	
 

@@ -12,7 +12,7 @@ public class Main {
                 + "	name text NOT NULL,\n"
                 + "	capacity real\n"
                 + ");";
-		System.out.println( "Create table: " + db.execute( sql ) );
+		System.out.println( "Create table: " + db.execute_update( sql ) );
 		
 		// delete table
 		String delete_sql = "DROP TABLE warehouses";
@@ -44,15 +44,16 @@ public class Main {
 				System.out.println( e );
 			}
 		}
-		*/
+		
 		Ingredient ingredients[] = {
 			new Ingredient( -1, 10, "ounces", "flower", "baking" ),
 			new Ingredient( -1, 1, "cup", "olive oil", "oil" ),
 			new Ingredient( -1, 1, "cup", "ground pork", "meat" )
-		};
-		RecipeDBManager db = new RecipeDBManager( "db_test" );
-		
+		};	
 		db.insert_recipe( "r_name", "this is a write up", ingredients );
+		*/
+		RecipeDBManager db = new RecipeDBManager( "db_test" );
+		System.out.println( db.get_recipe( 2 ) );
 		
 	}
 
