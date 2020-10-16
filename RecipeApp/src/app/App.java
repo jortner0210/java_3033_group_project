@@ -29,10 +29,10 @@ public class App extends Application {
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 		
 		// convert window size to specified percentage
-		double width = screenBounds.getWidth() * widthPercentage;
-		double height = screenBounds.getHeight() * heightPercentage;
-		double minX = (screenBounds.getWidth() - width) / 2;
-		double minY = (screenBounds.getHeight() - height) / 2;
+		double width = 500; //screenBounds.getWidth() * widthPercentage;
+		double height = 500; //screenBounds.getHeight() * heightPercentage;
+		double minX = width / 2; //(screenBounds.getWidth() - width) / 2;
+		double minY = height / 2; //(screenBounds.getHeight() - height) / 2;
 		/*
 		// pane to hold everything for now
 		BorderPane pane = new BorderPane();
@@ -120,7 +120,6 @@ public class App extends Application {
 		
 		
 	}
-	
 	
 	
 	public static void main(String[] args) {

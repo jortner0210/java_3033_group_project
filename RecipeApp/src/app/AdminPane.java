@@ -2,6 +2,7 @@ package app;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -41,6 +42,8 @@ public class AdminPane extends BorderPane {
 	
 	private void addRecipe() {
 		System.out.println("Add recipe clicked.");
+		RecipeInsertPane pane = new RecipeInsertPane();		
+		setCenter( pane );
 	}
 	
 	private void deleteRecipe() {

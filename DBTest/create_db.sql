@@ -15,7 +15,7 @@ CREATE TABLE ingredient (
 CREATE TABLE contains (
 	rid integer NOT NULL,
 	inid integer NOT NULL,
-	qty integer CHECK( qty >= 0 ),
+	qty float CHECK( qty >= 0 ),
 	metric VARCHAR( 255 ),
 	FOREIGN KEY( rid ) REFERENCES recipe( rid ),
 	FOREIGN KEY( inid ) REFERENCES ingredient( inid ),
