@@ -95,50 +95,6 @@ public class RecipeDBManager {
 		return 0;
 	}
 	
-	
-	
-	/*
-	 * Returns a list of all recipes with name
-	 */
-	public Recipe[] get_recipe( String name ) {
-		Recipe[] recipe_results = new Recipe[1];
-		int i = 0;
-		try {
-			String recipe_count = "SELECT Count(*) count FROM recipe";
-			ResultSet result = db.execute_query( recipe_count );
-			int count = result.getInt( "count" );
-			if ( count > 1 ) {
-				recipe_results = new Recipe[count];
-			}
-			String recipe_select = "SELECT * FROM recipe";
-			result = db.execute_query( recipe_select );
-			while( result.next() ) {
-		         //Retrieve by column name
-		         int id  	     = result.getInt( "id" );
-		         String r_name   = result.getString( "name" );
-		         String write_up = result.getString( "write_up" );
-		         
-		         recipe_results[i].id = id;
-		         recipe_results[i].write_up = write_up;
-		         recipe_results[i].name = r_name;
-		         
-		         //Display values
-		         System.out.print( "ID: " + id );
-		         System.out.print( ", Name: " + name );
-		         System.out.print( ", write_up: " + write_up );
-		         
-		         // TO DO : QUERY CONTAINS AND INGREDIENT
-		         
-		         i++;
-			}
-			
-		}
-		catch ( Exception e ) {
-			System.out.println( e );
-		}
-		return recipe_results;
-	}
-	
 	/*
 	 * Returns a list of ingredients in desire recipe
 	 */
@@ -172,6 +128,48 @@ public class RecipeDBManager {
 		return ingredients;
 	}
 	
+	/*
+	 * Returns a list of all recipes with name
+	 */
+	public Recipe[] get_recipe( String name ) {
+		Recipe[] recipe_results = new Recipe[1];
+		int i = 0;
+		try {
+			String recipe_count = "SELECT Count(*) count FROM recipe WHERE name=" + name;
+			ResultSet result = db.execute_query( recipe_count );
+			int count = result.getInt( "count" );
+			if ( count > 1 ) {
+				recipe_results = new Recipe[count];
+			}
+			String recipe_select = "SELECT * FROM recipe WHERE name=" + name;
+			result = db.execute_query( recipe_select );
+			while( result.next() ) {
+		         //Retrieve by column name
+		         int id  	     = result.getInt( "id" );
+		         String r_name   = result.getString( "name" );
+		         String write_up = result.getString( "write_up" );
+		         
+		         recipe_results[i].id = id;
+		         recipe_results[i].write_up = write_up;
+		         recipe_results[i].name = r_name;
+		         
+		         //Display values
+		         System.out.print( "ID: " + id );
+		         System.out.print( ", Name: " + name );
+		         System.out.print( ", write_up: " + write_up );
+		         
+		         // TO DO : QUERY CONTAINS AND INGREDIENT
+		         
+		         i++;
+			}
+			
+		}
+		catch ( Exception e ) {
+			System.out.println( e );
+		}
+		return recipe_results;
+	}
+	
 	
 	public Recipe get_recipe( int id ) {
 		Recipe recipe = new Recipe();
@@ -193,6 +191,33 @@ public class RecipeDBManager {
 			return null;
 		}
 		return recipe;
+	}
+	
+	public ArrayList<Recipe> get_all_recipes( ) {
+		ArrayList<Recipe> recipes = new ArrayList<>();
+		int i = 0;
+		try {
+			String recipe_select = "SELECT * FROM recipe";
+			ResultSet result = db.execute_query( recipe_select );
+			while( result.next() ) {
+				Recipe recipe = new Recipe();
+				//Retrieve by column name
+		        recipe.id		= result.getInt( "rid" );
+				recipe.name 	= result.getString( "name" );
+				recipe.write_up = result.getString( "write_up" );
+				recipe.ingredients = get_ingredients( recipe.id );
+		        //Display values
+		        System.out.print( "ID: " + recipe.id );
+		        System.out.print( ", Name: " + recipe.name );
+		        System.out.print( ", write_up: " + recipe.write_up + "\n" );	
+		        recipes.add( recipe );
+			}
+			
+		}
+		catch ( Exception e ) {
+			System.out.println( e );
+		}
+		return recipes;
 	}
 	
 
