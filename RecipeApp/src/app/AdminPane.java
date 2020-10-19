@@ -1,5 +1,6 @@
 package app;
 
+import app.RecipeInsert.RecipeInsertPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

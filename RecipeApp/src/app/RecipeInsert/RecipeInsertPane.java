@@ -1,35 +1,46 @@
-package app;
+package app.RecipeInsert;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PopupControl;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
 import javafx.stage.Popup;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 import java.util.*;
 
+import app.Ingredient;
+import app.Recipe;
+import app.RecipeDBManager;
+
 public class RecipeInsertPane extends GridPane {
 	
 	int next_label_row;
 	
-	ArrayList<Ingredient> ingredients_to_add = new ArrayList<>();
+	public ArrayList<Ingredient> ingredients_to_add = new ArrayList<>();
 	
 	public RecipeInsertPane() {
 		setPadding( new Insets( 10, 10, 10, 10 ) );
-		setMinSize( 300, 300 );
+		setMinSize( 200,200 );
 		setVgap( 5 );
 		setHgap( 5 );
 		// TITLE
@@ -88,83 +99,14 @@ public class RecipeInsertPane extends GridPane {
 	}
 	
 	public void addIngredient() {
-		
-		Label label = new Label();
+		IngredientInsert ins = new IngredientInsert(this);
+		ins.show();
+	}
 	
-		Stage popupWindow = new Stage();
-		
-		popupWindow.centerOnScreen();
-		popupWindow.setWidth(300);
-		popupWindow.setHeight(300);
-		
-		GridPane grid_pane = new GridPane();
-		grid_pane.setPadding( new Insets( 10, 10, 10, 10 ) );
-		grid_pane.setMinSize( 300, 300 );
-		grid_pane.setVgap( 5 );
-		grid_pane.setHgap( 5 );
-		
-		// NAME
-		Text name = new Text( "Name:" );
-		TextField name_text = new TextField();
-		name_text.setPrefColumnCount( 10 );
-				
-		// CATEGORY
-		Text category = new Text( "Category:" );
-		TextField category_text = new TextField();
-		category_text.setPrefColumnCount( 10 );
-		
-		// QTY
-		Text qty = new Text( "QTY:" );
-		TextField qty_text = new TextField();
-		qty_text.setPrefColumnCount( 10 );
-				
-		// METRIC
-		Text metric = new Text( "Metric:" );
-		TextField metric_text = new TextField();
-		metric_text.setPrefColumnCount( 10 );
-				
-		// DONE BUTTON
-		Button done = new Button("DONE");
-		done.setOnAction(new EventHandler<ActionEvent>() {
- 
-            public void handle( ActionEvent event ) {
-                Ingredient ingredient = new Ingredient();
-            	
-            	ingredient.name 	= name_text.getText();
-            	ingredient.category = name_text.getText();
-            	ingredient.qty 		= Float.parseFloat( qty_text.getText() );
-            	ingredient.metric 	= metric_text.getText();
-            	
-            	ingredients_to_add.add( ingredient );
-            	
-            	label.setText( "added: " + ingredient.name );
-            	
-            	popupWindow.close();
-            }
-            
-        });
-				
-		// col, row, col span, row span
-		grid_pane.add( name,     0, 0, 2, 1 );
-		grid_pane.add( category, 0, 2, 2, 1 );
-		grid_pane.add( qty, 	 0, 4, 2, 1 );
-		grid_pane.add( metric,   0, 6, 2, 1 );
-		grid_pane.add( done, 	 0, 8, 2, 1 );
-		
-		grid_pane.add( name_text,	  2, 0, 1, 1 );
-		grid_pane.add( category_text, 2, 2, 1, 1 );
-		grid_pane.add( qty_text,	  2, 4, 1, 1 );
-		grid_pane.add( metric_text,   2, 6, 1, 1 );
-		
-		Scene questionScene = new Scene( grid_pane, 300, 300 );
-		
-		popupWindow.setScene( questionScene );
-		popupWindow.showAndWait();
-		
-		
+	public void addToLabelRow(Label label, int col) {
 		add( label, 0, next_label_row );
 		next_label_row++;
 	}
-	
+		
 
 }

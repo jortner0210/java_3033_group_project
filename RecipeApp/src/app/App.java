@@ -31,8 +31,9 @@ public class App extends Application {
 		// convert window size to specified percentage
 		double width = 500; //screenBounds.getWidth() * widthPercentage;
 		double height = 500; //screenBounds.getHeight() * heightPercentage;
-		double minX = width / 2; //(screenBounds.getWidth() - width) / 2;
-		double minY = height / 2; //(screenBounds.getHeight() - height) / 2;
+		//double minX = width / 2; //(screenBounds.getWidth() - width) / 2;
+		//double minY = height / 2; //(screenBounds.getHeight() - height) / 2;
+	
 		/*
 		// pane to hold everything for now
 		BorderPane pane = new BorderPane();
@@ -74,8 +75,9 @@ public class App extends Application {
 		Scene scene = new Scene(user, width, height);
 		
 		primaryStage.setScene(scene);*/
-		primaryStage.setX(minX);
-		primaryStage.setY(minY);
+		//primaryStage.setX(minX);
+		//primaryStage.setY(minY);
+		primaryStage.centerOnScreen();
 		primaryStage.setWidth(width);
 		primaryStage.setHeight(height);
 		
@@ -116,7 +118,6 @@ public class App extends Application {
 			Scene scene = new Scene(user, width, height);
 			primaryStage.setScene(scene);
 		});
-		
 		
 		
 	}
