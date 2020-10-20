@@ -2,6 +2,7 @@ package app.RecipeInsert;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -39,70 +40,88 @@ import app.RecipeDBManager;
 
 public class RecipeInsertPane extends GridPane {
 	
-	int next_label_row;
-	
+
+	// contains the ingredients that will be added to the db
 	public ArrayList<Ingredient> ingredients_to_add = new ArrayList<>();
 	
+	// contains strings to actually display the added ingredients for this pane
 	ListView<String> ingredientsList = new ListView<String>();
+	
+	/**	so it seems that this FXCollections observable list will
+	 * 	only work if it has at least two items in it;
+	 * because of this I added two empty strings to start it;
+	 */
 	ObservableList<String> items = FXCollections.observableArrayList("","");
 	
-	boolean ingredientsEmpty = true;
-	
 	public RecipeInsertPane() {
+		
+		// set up some initial formatting
 		setPadding( new Insets( 20 ) );
 		setMinSize( 500, 500);
 		setVgap( 20 );
 		setHgap( 20 );
 		setAlignment(Pos.TOP_CENTER);
 		
+		// add the observable list items to the listview
 		ingredientsList.setItems(items);
 		
+		// set up the widths of the columns
 		ColumnConstraints col0 = new ColumnConstraints(100);
 		ColumnConstraints col1 = new ColumnConstraints(100);
 		ColumnConstraints col2 = new ColumnConstraints(600);
 		getColumnConstraints().addAll(col0, col1, col2);
 		
+		// I used this alot so I saved it. This way if we decide to change it, it's easy
 		String fontFamily = "Abyssinicia SIL";
-		// TITLE
+		
+		// recipe name
 		Text title = new Text( "Recipe Name" );
-		System.out.println(Font.getFamilies());
-		title.setFont(Font.font("Abyssinicia SIL",FontWeight.MEDIUM, 25));
+		title.setFont(Font.font(fontFamily,FontWeight.MEDIUM, 25));
+		GridPane.setHalignment(title, HPos.CENTER);
+		
+		// TextField for the recipe name
 		TextField title_text = new TextField();
-		title_text.setFont(Font.font("Abyssinicia SIL", 20));
+		title_text.setFont(Font.font(fontFamily, 20));
 		title_text.setPrefColumnCount( 10 );
 		title_text.setMaxWidth(600);
 		title_text.setPadding(new Insets(15));
 		GridPane.setHalignment(title_text, HPos.CENTER);
 		GridPane.setMargin(title_text, new Insets(0, 0, 40, 0));
 		
-		// INGREDIENTS
-		Text ingredients = new Text( "Ingredients: ");
+		// label for ingredients
+		Text ingredients = new Text( "Ingredients");
 		ingredients.setFont(Font.font(fontFamily, FontWeight.MEDIUM, 20));
 		ingredients.setTextAlignment(TextAlignment.CENTER);
 		
-		
-		// ADD INGREDIENT
+		// add ingredient button
 		Button add_ingredient = new Button("+");
 		add_ingredient.setFont(Font.font(fontFamily, FontWeight.BOLD, 15));
-		
-		
-		add_ingredient.setOnAction( e -> addIngredient() );
 		add_ingredient.setAlignment(Pos.CENTER_RIGHT);
 		GridPane.setHalignment(add_ingredient, HPos.RIGHT);
 		GridPane.setMargin(add_ingredient, new Insets(0,20,0,0));
 		
+		add_ingredient.setOnAction( e -> addIngredient() );
 		
-		
-		// WRITE UP
-		Text write_up = new Text( "Instructions:" );
+		// instructions label
+		Text write_up = new Text( "Instructions" );
 		write_up.setFont(Font.font(fontFamily, FontWeight.MEDIUM, 20));
+		
+		// instructs text area
 		TextArea write_up_text = new TextArea();
 		write_up_text.setPrefColumnCount( 10 );
+		write_up_text.setPrefHeight(600);
 		
+		// done and cancel buttons
+		Button done_button = new Button("Submit");
+		Button cancel_button = new Button("Cancel");
 		
+		// put the buttons in a flow pane for easier formatting
+		FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL, 10.0, 10.0);
+		flowPane.getChildren().addAll(cancel_button, done_button);
+		flowPane.setAlignment(Pos.CENTER_RIGHT);
+		GridPane.setHalignment(flowPane, HPos.RIGHT);
 		
-		// RECIPE DONE BUTTON
-		Button done_button = new Button("DONE");
+		// actions for these buttons
 		done_button.setOnAction(new EventHandler<ActionEvent>() {
 			 
             public void handle( ActionEvent event ) {
@@ -120,23 +139,18 @@ public class RecipeInsertPane extends GridPane {
             
         });
 		
+		cancel_button.setOnAction(e -> clearPane());
+		
 		// col, row, col span, row span
-		//add( done_button,    0, 0, 2, 1 );
-		add( title,    		 0, 0, 3, 1 );
-		add( title_text,	0, 1, 3, 1 );
+		add( title,    		 	0, 0, 3, 1 );
+		add( title_text,		0, 1, 3, 1 );
+		add( ingredients,	 	0, 2, 1, 1 );	
+		add( add_ingredient, 	1, 2, 1, 1 );
+		add( ingredientsList, 	0, 3, 2, 1 );
+		add( write_up, 		 	2, 2, 1, 1 );
+		add( write_up_text, 	2, 3, 1, 1 );
+		add( flowPane,			2, 4, 1, 1 );
 		
-		add( ingredients,	 0, 2, 1, 1 );	
-		add( add_ingredient, 1, 2, 1, 1 );
-
-		
-		add(ingredientsList, 0, 3, 2, 1);
-		
-		
-		add( write_up, 		 2, 2, 1, 1 );
-		add( write_up_text, 2, 3, 1, 1 );
-		
-		next_label_row = 7;
-		GridPane.setHalignment(title, HPos.CENTER);
 	}
 	
 	public ArrayList<Ingredient> getIngredients() {
@@ -154,24 +168,8 @@ public class RecipeInsertPane extends GridPane {
 		ins.show();
 	}
 	
-	public void addToIngredientsList(String ingr) {
-		if(ingredientsEmpty) {
-			//add(ingredientsList, 0, 3, 2, 1);
-			ingredientsEmpty = false;
-		}
-		items.add(ingredients_to_add.size()-1,ingr);
-		/*int count = 0;
-		for(int i = 0; i < items.size(); i++) {
-			if(!items.get(i).equals(""))
-				count++;
-		}*/
-		//ingredientsList.setMaxHeight(count * 20 + 2);
-		
-	}
-	public void addToLabelRow(Label label, int col) {
-		add( label, 0, next_label_row );
-		next_label_row++;
-	}
+	public void addToIngredientsList(String ingr) { items.add(ingredients_to_add.size()-1,ingr); }
+	
 		
 
 }

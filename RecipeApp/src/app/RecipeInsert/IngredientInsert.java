@@ -32,7 +32,6 @@ public class IngredientInsert {
 	// NAME
 	Text name = new Text( "Name:" );
 	TextField name_text = new TextField();
-	//name_text.setAlignment(Pos.CENTER_RIGHT);
 			
 	// CATEGORY
 	Text category = new Text( "Category:" );
@@ -42,16 +41,17 @@ public class IngredientInsert {
 	Text qty = new Text( "QTY:" );
 	TextField qty_text = new TextField();
 	
+	// Error message if invalid qty
 	Text qtyError = new Text( "Quantity must be a number");
 	
 	
-	
-	String metrics[] = {"cups", "tsp", "Tbsp", "gal", "L", "mL", "oz", "lbs", "Other"};
-	ComboBox combo_box = new ComboBox(FXCollections.observableArrayList(metrics));
 
 	// METRIC
 	Text metric = new Text( "Metric:" );
 	TextField metric_text = new TextField();
+	// combo box for the different types of metrics
+	String metrics[] = {"cups", "tsp", "Tbsp", "gal", "L", "mL", "oz", "lbs", "Other"};
+	ComboBox combo_box = new ComboBox(FXCollections.observableArrayList(metrics));
 			
 	// DONE BUTTON
 	Button done = new Button("DONE");
@@ -60,7 +60,9 @@ public class IngredientInsert {
 		this.callingClass = callingClass;
 	}
 	
+	// displays this pane
 	public void show() {
+		// some formatting
 		stage.centerOnScreen();
 		stage.setWidth(width);
 		stage.setHeight(height);
@@ -72,12 +74,13 @@ public class IngredientInsert {
 		qtyError.setVisible(false);
 		qtyError.setFill(Color.RED);
 		
+		// put a gridpane in the center
 		GridPane grid_pane = new GridPane();
 		grid_pane.setPadding( new Insets( 0, 10, 10, 10 ) );
 		grid_pane.setVgap( 5 );
 		grid_pane.setHgap( 5 );
 		
-			
+		// set up column widths
 		ColumnConstraints col0 = new ColumnConstraints();
 		col0.setMinWidth(75);
 		col0.setMaxWidth(75);
@@ -92,10 +95,9 @@ public class IngredientInsert {
 		col2.setMaxWidth(75);
 		grid_pane.getColumnConstraints().add(col2);
 		
-		
 		grid_pane.setAlignment(Pos.CENTER);
 		
-		
+		// add listener to detect for qty errors
 		qty_text.setPrefColumnCount( 10 );
 		qty_text.textProperty().addListener((observable, oldVal, newVal) -> {
 			try {
@@ -116,7 +118,7 @@ public class IngredientInsert {
 		});
 		
 		
-		
+		// submits ingredient
 		done.setOnAction(new EventHandler<ActionEvent>() {
  
             public void handle( ActionEvent event ) {
@@ -153,6 +155,8 @@ public class IngredientInsert {
 		grid_pane.add( category_text, 1, 3, 1, 1 );
 		grid_pane.add( qty_text,	  1, 5, 1, 1 );
 		grid_pane.add( combo_box, 	  2, 5, 1, 1 );	
+		
+		// adding an hbox for easy alignment of done button
 		HBox hbox = new HBox(10);
 		hbox.setAlignment(Pos.BOTTOM_RIGHT);
 		hbox.getChildren().add(done);
@@ -165,7 +169,6 @@ public class IngredientInsert {
 		stage.setScene( questionScene );
 		stage.showAndWait();
 	
-		//callingClass.addToLabelRow(label, 0);
 		callingClass.addToIngredientsList(ingredientDisplay);
 		
 	}
