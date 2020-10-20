@@ -1,5 +1,6 @@
 package app.RecipeInsert;
 
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -8,8 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PopupControl;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.FlowPane;
@@ -22,7 +25,9 @@ import javafx.scene.text.*;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -38,24 +43,63 @@ public class RecipeInsertPane extends GridPane {
 	
 	public ArrayList<Ingredient> ingredients_to_add = new ArrayList<>();
 	
+	ListView<String> ingredientsList = new ListView<String>();
+	ObservableList<String> items = FXCollections.observableArrayList("","");
+	
+	boolean ingredientsEmpty = true;
+	
 	public RecipeInsertPane() {
-		setPadding( new Insets( 10, 10, 10, 10 ) );
-		setMinSize( 200,200 );
-		setVgap( 5 );
-		setHgap( 5 );
-		// TITLE
-		Text title = new Text( "Title:" );
-		TextField title_text = new TextField();
-		title_text.setPrefColumnCount( 10 );
+		setPadding( new Insets( 20 ) );
+		setMinSize( 500, 500);
+		setVgap( 20 );
+		setHgap( 20 );
+		setAlignment(Pos.TOP_CENTER);
 		
-		// WRITE UP
-		Text write_up = new Text( "Description:" );
-		TextField write_up_text = new TextField();
-		write_up_text.setPrefColumnCount( 10 );
+		ingredientsList.setItems(items);
+		
+		ColumnConstraints col0 = new ColumnConstraints(100);
+		ColumnConstraints col1 = new ColumnConstraints(100);
+		ColumnConstraints col2 = new ColumnConstraints(600);
+		getColumnConstraints().addAll(col0, col1, col2);
+		
+		String fontFamily = "Abyssinicia SIL";
+		// TITLE
+		Text title = new Text( "Recipe Name" );
+		System.out.println(Font.getFamilies());
+		title.setFont(Font.font("Abyssinicia SIL",FontWeight.MEDIUM, 25));
+		TextField title_text = new TextField();
+		title_text.setFont(Font.font("Abyssinicia SIL", 20));
+		title_text.setPrefColumnCount( 10 );
+		title_text.setMaxWidth(600);
+		title_text.setPadding(new Insets(15));
+		GridPane.setHalignment(title_text, HPos.CENTER);
+		GridPane.setMargin(title_text, new Insets(0, 0, 40, 0));
+		
+		// INGREDIENTS
+		Text ingredients = new Text( "Ingredients: ");
+		ingredients.setFont(Font.font(fontFamily, FontWeight.MEDIUM, 20));
+		ingredients.setTextAlignment(TextAlignment.CENTER);
+		
 		
 		// ADD INGREDIENT
-		Button add_ingredient = new Button("Add Ingredient");
+		Button add_ingredient = new Button("+");
+		add_ingredient.setFont(Font.font(fontFamily, FontWeight.BOLD, 15));
+		
+		
 		add_ingredient.setOnAction( e -> addIngredient() );
+		add_ingredient.setAlignment(Pos.CENTER_RIGHT);
+		GridPane.setHalignment(add_ingredient, HPos.RIGHT);
+		GridPane.setMargin(add_ingredient, new Insets(0,20,0,0));
+		
+		
+		
+		// WRITE UP
+		Text write_up = new Text( "Instructions:" );
+		write_up.setFont(Font.font(fontFamily, FontWeight.MEDIUM, 20));
+		TextArea write_up_text = new TextArea();
+		write_up_text.setPrefColumnCount( 10 );
+		
+		
 		
 		// RECIPE DONE BUTTON
 		Button done_button = new Button("DONE");
@@ -77,15 +121,22 @@ public class RecipeInsertPane extends GridPane {
         });
 		
 		// col, row, col span, row span
-		add( done_button,    0, 0, 2, 1 );
-		add( title,    		 0, 2, 2, 1 );
-		add( write_up, 		 0, 4, 2, 1 );
-		add( add_ingredient, 0, 6, 2, 1 );
+		//add( done_button,    0, 0, 2, 1 );
+		add( title,    		 0, 0, 3, 1 );
+		add( title_text,	0, 1, 3, 1 );
+		
+		add( ingredients,	 0, 2, 1, 1 );	
+		add( add_ingredient, 1, 2, 1, 1 );
+
+		
+		add(ingredientsList, 0, 3, 2, 1);
+		
+		
+		add( write_up, 		 2, 2, 1, 1 );
+		add( write_up_text, 2, 3, 1, 1 );
 		
 		next_label_row = 7;
-		
-		add( title_text,	2, 2, 1, 1 );
-		add( write_up_text, 2, 4, 1, 1 );
+		GridPane.setHalignment(title, HPos.CENTER);
 	}
 	
 	public ArrayList<Ingredient> getIngredients() {
@@ -103,6 +154,20 @@ public class RecipeInsertPane extends GridPane {
 		ins.show();
 	}
 	
+	public void addToIngredientsList(String ingr) {
+		if(ingredientsEmpty) {
+			//add(ingredientsList, 0, 3, 2, 1);
+			ingredientsEmpty = false;
+		}
+		items.add(ingredients_to_add.size()-1,ingr);
+		/*int count = 0;
+		for(int i = 0; i < items.size(); i++) {
+			if(!items.get(i).equals(""))
+				count++;
+		}*/
+		//ingredientsList.setMaxHeight(count * 20 + 2);
+		
+	}
 	public void addToLabelRow(Label label, int col) {
 		add( label, 0, next_label_row );
 		next_label_row++;

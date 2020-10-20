@@ -27,7 +27,7 @@ public class IngredientInsert {
 	Stage stage = new Stage();
 	RecipeInsertPane callingClass = null;
 	
-	
+	String ingredientDisplay = "";
 	
 	// NAME
 	Text name = new Text( "Name:" );
@@ -130,7 +130,12 @@ public class IngredientInsert {
             	callingClass.ingredients_to_add.add( ingredient );
             	
             	label.setText( "added: " + ingredient.name);
-            	
+            	ingredientDisplay += "\u2022 ";
+            	if(ingredient.qty == Math.ceil(ingredient.qty))
+            		ingredientDisplay += (int) ingredient.qty;
+            	else
+            		ingredientDisplay += ingredient.qty;
+            	ingredientDisplay +=  " " + ingredient.metric + " " + ingredient.name;
             	stage.close();
             }
             
@@ -160,8 +165,8 @@ public class IngredientInsert {
 		stage.setScene( questionScene );
 		stage.showAndWait();
 	
-		callingClass.addToLabelRow(label, 0);
-		
+		//callingClass.addToLabelRow(label, 0);
+		callingClass.addToIngredientsList(ingredientDisplay);
 		
 	}
 	
