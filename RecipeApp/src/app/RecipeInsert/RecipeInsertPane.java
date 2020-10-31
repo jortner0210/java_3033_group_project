@@ -34,6 +34,7 @@ import javafx.event.EventHandler;
 
 import java.util.*;
 
+import app.AdminPane;
 import app.Ingredient;
 import app.Recipe;
 import app.RecipeDBManager;
@@ -85,6 +86,7 @@ public class RecipeInsertPane extends GridPane {
 		title_text.setPrefColumnCount( 10 );
 		title_text.setMaxWidth(600);
 		title_text.setPadding(new Insets(15));
+		
 		GridPane.setHalignment(title_text, HPos.CENTER);
 		GridPane.setMargin(title_text, new Insets(0, 0, 40, 0));
 		
@@ -110,7 +112,6 @@ public class RecipeInsertPane extends GridPane {
 		TextArea write_up_text = new TextArea();
 		write_up_text.setPrefColumnCount( 10 );
 		write_up_text.setPrefHeight(600);
-		
 		// done and cancel buttons
 		Button done_button = new Button("Submit");
 		Button cancel_button = new Button("Cancel");
@@ -159,8 +160,8 @@ public class RecipeInsertPane extends GridPane {
 	
 	public void clearPane() {
 		Parent parent = getParent();
-		BorderPane pane = ( BorderPane )parent;		
-		pane.setCenter( null );
+		AdminPane pane = ( AdminPane )parent;		
+		pane.setCenterPane();
 	}
 	
 	public void addIngredient() {
