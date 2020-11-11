@@ -209,7 +209,7 @@ class Controller {// get screen size
 			System.out.println("main insertrecipehandler");
 			Recipe recipe = (Recipe) event.getRecipe();
 			db.reconnect();
-			db.insert_recipe(recipe.name, recipe.write_up, recipe.ingredients);
+			db.insert_recipe(recipe.name, recipe.write_up, recipe.prepTime, recipe.cookTime, recipe.totalTime, recipe.yield, recipe.ingredients);
 			db.close();
 			closeWindow();
 		}

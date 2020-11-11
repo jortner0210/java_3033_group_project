@@ -142,16 +142,16 @@ public class RecipeViewPane extends BorderPane {
 		
 		double spacing = 5;
 		
-		RecipeInfoView() {
+		RecipeInfoView( ) {
 			labels.add(prepTimeLabel);
 			labels.add(cookTimeLabel);
 			labels.add(totalTimeLabel);
 			labels.add(yieldLabel);
 			
-			values.add(new Text(getPrepTime()));
-			values.add(new Text(getCookTime()));
-			values.add(new Text(getTotalTime()));
-			values.add(new Text(getYield()));
+			values.add(new Text(recipe.prepTime));
+			values.add(new Text(recipe.cookTime));
+			values.add(new Text(recipe.totalTime));
+			values.add(new Text(recipe.yield));
 			
 			for ( Text label : labels ) {
 				label.setFont(Font.font(fontFamily,FontWeight.BOLD, 20));

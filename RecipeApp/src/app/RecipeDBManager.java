@@ -56,15 +56,22 @@ public class RecipeDBManager {
 	/*
 	 * insert recipe into table and update ingredients and contains tables
 	 */
-	public int insert_recipe( String name, String write_up, ArrayList<Ingredient> ingredients ) {
+	public int insert_recipe( String name, String write_up, 
+							  String prep, String cook, 
+							  String total_time, String yield, 
+							  ArrayList<Ingredient> ingredients ) {
 		// insert to recipe
 		String recipe_check = "SELECT Count(*) count FROM recipe";
 		int rid = -1;
 		try {
-			String insert_recipe_query = "INSERT INTO recipe ( name, write_up ) Values( ?, ? )";
+			String insert_recipe_query = "INSERT INTO recipe ( name, write_up, prep_time, cook_time, total_time, yield ) Values( ?, ?, ?, ?, ?, ? )";
 			PreparedStatement prep_stmt = db.get_connection().prepareStatement( insert_recipe_query );
 			prep_stmt.setString( 1, name );
 			prep_stmt.setString( 2, write_up );
+			prep_stmt.setString( 3, prep );
+			prep_stmt.setString( 4, cook );
+			prep_stmt.setString( 5, total_time );
+			prep_stmt.setString( 6, yield );
 			prep_stmt.execute();
 			ResultSet result = db.execute_query( recipe_check );
 			rid = result.getInt( "count" );
@@ -163,10 +170,19 @@ public class RecipeDBManager {
 		         int id  	     = result.getInt( "id" );
 		         String r_name   = result.getString( "name" );
 		         String write_up = result.getString( "write_up" );
+		         String prep = result.getString( "prep_time" );
+		         String cook = result.getString( "cook_time" );
+		         String total = result.getString( "total_time" );
+		         String yield = result.getString( "yield" );
 		         
 		         recipe_results[i].id = id;
 		         recipe_results[i].write_up = write_up;
 		         recipe_results[i].name = r_name;
+		         
+		         recipe_results[i].prepTime = prep;
+		         recipe_results[i].cookTime = cook;
+		         recipe_results[i].totalTime = total;
+		         recipe_results[i].yield = yield;
 		         
 		         //Display values
 		         System.out.print( "ID: " + id );
@@ -196,6 +212,10 @@ public class RecipeDBManager {
 	        recipe.id		= id;
 			recipe.name 	= result.getString( "name" );
 			recipe.write_up = result.getString( "write_up" );
+			recipe.prepTime = result.getString( "prep_time" );
+			recipe.cookTime = result.getString( "cook_time" );
+			recipe.totalTime = result.getString( "total_time" );
+			recipe.yield = result.getString( "yield" );
 			recipe.ingredients = get_ingredients( id );
 	        //Display values
 	        System.out.print( "ID: " + id );
@@ -222,6 +242,10 @@ public class RecipeDBManager {
 		        recipe.id		= result.getInt( "rid" );
 				recipe.name 	= result.getString( "name" );
 				recipe.write_up = result.getString( "write_up" );
+				recipe.prepTime = result.getString( "prep_time" );
+				recipe.cookTime = result.getString( "cook_time" );
+				recipe.totalTime = result.getString( "total_time" );
+				recipe.yield = result.getString( "yield" );
 				recipe.ingredients = get_ingredients( recipe.id );
 		        //Display values
 		        System.out.print( "ID: " + recipe.id );

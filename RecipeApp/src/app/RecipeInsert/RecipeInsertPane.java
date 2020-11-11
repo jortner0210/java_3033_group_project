@@ -155,6 +155,7 @@ public class RecipeInsertPane extends GridPane {
 			System.out.println( "recipe done" );
             Recipe recipe = new Recipe( -1, title_text.getText(), 
             							write_up_text.getText(), 
+            							"prep", "cook", "total_time", "yield",
             							getIngredients() );
             System.out.println( recipe );
             Event insertRecipe = new InsertRecipeToDatabaseEvent(recipe);

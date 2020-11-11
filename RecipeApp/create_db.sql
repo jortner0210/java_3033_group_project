@@ -1,7 +1,11 @@
 CREATE TABLE recipe (
 	rid integer PRIMARY KEY,
 	name VARCHAR( 255 ),
-	write_up VARCHAR( 5000 )
+	write_up VARCHAR( 5000 ),
+	prep_time VARCHAR( 255 ),
+	cook_time VARCHAR( 255 ),
+	total_time VARCHAR( 255 ),
+	yield VARCHAR( 255 )
 );
 
 
@@ -21,3 +25,5 @@ CREATE TABLE contains (
 	FOREIGN KEY( inid ) REFERENCES ingredient( inid ),
 	PRIMARY KEY( rid, inid )
 );
+
+

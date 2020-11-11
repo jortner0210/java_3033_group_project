@@ -8,16 +8,27 @@ public class Recipe {
 	public int id;
 	public String name;
 	public String write_up;
+	String prepTime;
+	String cookTime;
+	String totalTime;
+	String yield;
 	public ArrayList<Ingredient> ingredients = new ArrayList<>();
 	
 	public Recipe() {
 		
 	}
 	
-	public Recipe( int id, String name, String write_up, ArrayList<Ingredient> ingredients ) {
+	public Recipe( int id, String name, 
+				   String write_up, String prep, 
+				   String cook, String total_time, 
+				   String yield, ArrayList<Ingredient> ingredients ) {
 		this.id = id;
 		this.name = name;
 		this.write_up = write_up;
+		this.prepTime = prep;
+		this.cookTime = cook;
+		this.totalTime = total_time;
+		this.yield = yield;
 		for ( Ingredient i : ingredients ) {
 			this.ingredients.add( new Ingredient( i.id, i.qty, i.metric, i.name, i.category ) );
 		}
