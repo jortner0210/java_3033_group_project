@@ -1,6 +1,7 @@
 package app;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Recipe {
 
@@ -29,6 +30,15 @@ public class Recipe {
 	
 	public String toString() {
 		return "id="+id+",name="+name+",write_up="+write_up+",ingredient_count="+ingredients.size()+"\n";
+	}
+	
+	public List<String> get_ingredients() {
+		ArrayList<String> ingredientsStrings = new ArrayList<String>();
+		for (Ingredient i : ingredients )
+		{
+			ingredientsStrings.add(i.toString());
+		}
+		return ingredientsStrings;
 	}
 	
 }

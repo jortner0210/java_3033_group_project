@@ -15,7 +15,8 @@ public class AdminPane extends BorderPane {
 	public Button btAddRecipe = new Button("Add Recipe");
 	public Button btDeleteRecipe = new Button("Delete Recipe");
 	public Button btEditRecipe = new Button("Edit Recipe");
-	
+	public Button recipeView = new Button("View Recipe");
+	StackPane pane = new StackPane();
 	public AdminPane() {
 		HBox hBox = new HBox(15);
 		hBox.setPadding(new Insets(15));
@@ -24,21 +25,29 @@ public class AdminPane extends BorderPane {
 		hBox.setAlignment(Pos.CENTER_LEFT);
 		setTop(hBox);
 		
-		StackPane pane = new StackPane();
 		
-		Label helloWorld = new Label("Admin pane");
-		helloWorld.setAlignment(Pos.CENTER);
-
-		helloWorld.setFont(new Font("Arial", 30));
-		pane.getChildren().add(helloWorld);
+		setCenterPane();
 		
-		setCenter(pane);
 		
 		btAddRecipe.setOnAction(e -> addRecipe());
 		
 		btEditRecipe.setOnAction(e -> editRecipe());
 		
 		btDeleteRecipe.setOnAction(e -> deleteRecipe());
+		
+		recipeView.setOnAction(e -> viewRecipe());
+	}
+	
+	public void setCenterPane() {
+		//Label helloWorld = new Label("Admin pane");
+		recipeView.setAlignment(Pos.CENTER);
+
+		recipeView.setFont(new Font("Arial", 30));
+		pane.getChildren().clear();
+		pane.getChildren().add(recipeView);
+		
+		setCenter(pane);
+		
 	}
 	
 	private void addRecipe() {
@@ -54,6 +63,17 @@ public class AdminPane extends BorderPane {
 	private void editRecipe() {
 		System.out.println("Edit recipe clicked.");
 	}
+	
+	private void viewRecipe() {
+		System.out.println("View recipe clicked.");
+		RecipeViewPane pane = new RecipeViewPane(9);
+		setCenter( pane );
+		
+	}
+	
+	
+	
+	
 	
 	
 }
