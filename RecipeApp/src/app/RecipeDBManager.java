@@ -35,6 +35,7 @@ public class RecipeDBManager {
 				prep_stmt.execute();
 				result = db.execute_query( ingredient_check  + ingredient.name + "'" );
 				in_id = result.getInt( "inid" );
+				result.close();
 			}
 		}
 		catch ( SQLException e ){
@@ -58,6 +59,7 @@ public class RecipeDBManager {
 			prep_stmt.execute();
 			ResultSet result = db.execute_query( recipe_check );
 			rid = result.getInt( "count" );
+			result.close();
 			
 		}
 		catch ( Exception e ) {
@@ -120,7 +122,9 @@ public class RecipeDBManager {
 				ingredients.add( curr_ingredient );
 				
 				System.out.println( curr_ingredient );
+				ingredient_result.close();
 			}
+			contains_result.close();
 		}
 		catch ( Exception e ) {
 			System.out.println( e );
@@ -162,6 +166,7 @@ public class RecipeDBManager {
 		         
 		         i++;
 			}
+			result.close();
 			
 		}
 		catch ( Exception e ) {
@@ -184,7 +189,8 @@ public class RecipeDBManager {
 	        //Display values
 	        System.out.print( "ID: " + id );
 	        System.out.print( ", Name: " + recipe.name );
-	        System.out.print( ", write_up: " + recipe.write_up + "\n" );			
+	        System.out.print( ", write_up: " + recipe.write_up + "\n" );
+	        result.close();
 		}
 		catch ( Exception e ) {
 			System.out.println( e );
@@ -212,6 +218,7 @@ public class RecipeDBManager {
 		        System.out.print( ", write_up: " + recipe.write_up + "\n" );	
 		        recipes.add( recipe );
 			}
+			result.close();
 			
 		}
 		catch ( Exception e ) {

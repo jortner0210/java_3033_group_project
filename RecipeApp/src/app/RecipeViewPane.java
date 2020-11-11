@@ -61,9 +61,8 @@ public class RecipeViewPane extends BorderPane {
 		mainPane.setMinSize(900,1000);
 		mainPane.setAlignment(Pos.TOP_CENTER);
 
-	
 		// get recipe
-		recipe = db.get_recipe(id);
+		recipe = db.get_recipe( id );
 		
 		// convert ingredients into strings in the right format and then into Texts
 		for ( Ingredient ingredient : recipe.ingredients ) {
