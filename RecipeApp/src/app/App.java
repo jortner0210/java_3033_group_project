@@ -41,93 +41,9 @@ public class App extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) {
-		/*
-		 * 
-		// get screen size
-		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-		
-		// convert window size to specified percentage
-		double height = screenBounds.getHeight() * heightPercentage;
-
-		double width = height;
-		
-		*/
-		//double minX = width / 2; //(screenBounds.getWidth() - width) / 2;
-		//double minY = height / 2; //(screenBounds.getHeight() - height) / 2;
-	
-		/*
-		// pane to hold everything for now
-		BorderPane pane = new BorderPane();
-		
-		// buttons
-		Button btAddRecipe = new Button("Add Recipe");
-		Button btDeleteRecipe = new Button("Delete Recipe");
-		Button btEditRecipe = new Button("Edit Recipe");
-		HBox hBox = new HBox(15);
-		hBox.getChildren().addAll(btAddRecipe, btDeleteRecipe, btEditRecipe);
-		hBox.setAlignment(Pos.CENTER);
-		pane.setCenter(hBox);
-		
-		btAddRecipe.setOnAction(e -> System.out.println("Add recipe button clicked."));
-		btDeleteRecipe.setOnAction(e -> System.out.println("Delete recipe button clicked."));
-		btEditRecipe.setOnAction(e -> System.out.println("Edit recipe button clicked."));
-		
-		// create label
-		Label helloWorld = new Label("Welcome to the recipe app.");
-		helloWorld.setAlignment(Pos.CENTER);
-		helloWorld.setTranslateY(50);
-		helloWorld.setMaxWidth(width);
-		helloWorld.setFont(new Font("Airal", 30));
-		pane.setTop(helloWorld);
-		
-		
-		// create scene
-		Scene scene = new Scene(pane, width, height);
-
-		// set stage 
-		primaryStage.setScene(scene);*/
-		
-		/*
-		AdminPane admin = new AdminPane();
-		Scene scene = new Scene(admin, width, height);*/
-		
-		/*
-		UserPane user = new UserPane();
-		Scene scene = new Scene(user, width, height);
-		
-		primaryStage.setScene(scene);*/
-		//primaryStage.setX(minX);
-		//primaryStage.setY(minY);
-		
-		/*
-		
-		primaryStage.centerOnScreen();
-		primaryStage.setWidth(width);
-		primaryStage.setHeight(height);
-		primaryStage.setResizable(false);
-		MainPane mainPane = new MainPane();
-		mainPane.addEventHandler(AddRecipeEvent.ADD_RECIPE, new AddRecipeHandler());
-		mainPane.addEventHandler(ShowRecipeEvent.SHOW_RECIPE, new ShowRecipeHandler());
-		
-		Scene scene = new Scene(mainPane, width, height);
-		primaryStage.setScene(scene);
-	
-		primaryStage.setTitle("Recipe App");
-		primaryStage.show();
-		
-		*/
+		// start controller
 		Controller controller = new Controller(primaryStage);
-		
-		
 	}
-	/*
-	private class MyEventHandler implements EventHandler<MyEvent> {
-		@Override
-		public void handle(MyEvent event) {
-			MainPane main = (MainPane) event.getTarget();
-			main.hi();
-		}
-	}*/
 	
 	
 	
@@ -136,8 +52,12 @@ public class App extends Application {
 	}
 }
 
-class Controller {// get screen size
+// manages the screens
+class Controller {
+	
 	double heightPercentage = 0.9;
+	
+	// get screen size
 	Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 	
 	// convert window size to specified percentage
@@ -150,6 +70,8 @@ class Controller {// get screen size
 	Stack<Scene> scenes = new Stack<Scene>();
 	Stage primaryStage;
 	RecipeDBManager db;
+	
+	// constructor starts db, then adds the main pane to it
 	public Controller(Stage primaryStage) 
 	{
 		db = new RecipeDBManager( "test_db" );
@@ -170,21 +92,19 @@ class Controller {// get screen size
 		primaryStage.show();
 	}
 	
+	// closes a scene and resets it
 	private void closeWindow() {
 		scenes.pop();
 		primaryStage.setScene(scenes.peek());
 	}
 	
+	// opens a new scene
 	private void pushWindow(Pane pane) {
 		scenes.push(new Scene(pane, width, height));
 		primaryStage.setScene(scenes.peek());
 	}
 	
-	private void addRecipe() {
-		System.out.println("add recipe");
-	}
-	
-	
+	// handler for ADD_RECIPE event; tells it to change to the recipe insert pane
 	private class AddRecipeHandler implements EventHandler<AddRecipeEvent>
 	{
 		@Override
@@ -203,6 +123,7 @@ class Controller {// get screen size
 		}
 	}
 	
+	// handler for a INSERT_RECIPE event; actually inserts the recipe into database
 	private class InsertRecipeHandler implements EventHandler<InsertRecipeToDatabaseEvent>
 	{
 		@Override
@@ -216,6 +137,7 @@ class Controller {// get screen size
 		}
 	}
 	
+	// handler for SHOW_RECIPE event
 	private class ShowRecipeHandler implements EventHandler<ShowRecipeEvent>
 	{
 		@Override
@@ -226,6 +148,7 @@ class Controller {// get screen size
 		}
 	}
 	
+	// method to show the recipe view pane
 	private void showRecipe(Recipe recipe) {
 		System.out.println("show recipe");
 		RecipeViewPane viewPane = new RecipeViewPane(recipe);
@@ -243,7 +166,7 @@ class Controller {// get screen size
 	}
 }
 
-
+// this holds the recipe list view and the buttons
 class MainPane extends BorderPane {
 
 	public Button btAddRecipe = new Button("Add Recipe");
@@ -264,14 +187,6 @@ class MainPane extends BorderPane {
 		hBox.getChildren().addAll(btAddRecipe, btDeleteRecipe, btEditRecipe);
 		hBox.setAlignment(Pos.CENTER_LEFT);
 		setTop(hBox);
-		/*
-		addEventHandler(
-				MyEvent.ADD_RECIPE,
-				event);
-		
-		addEventHandler(
-				MyEvent.SHOW_RECIPE,
-				event);*/
 		
 		setCenterPane();
 		
@@ -284,6 +199,7 @@ class MainPane extends BorderPane {
 		
 	}
 	
+	// adds recipe list view
 	public void setCenterPane() {
 		pane.getChildren().clear();
 		pane.getChildren().add(recipeListView);
@@ -292,6 +208,7 @@ class MainPane extends BorderPane {
 		
 	}
 	
+	// tells controller to switch scenes
 	private void addRecipe() {
 		Event addRecipeEvent = new AddRecipeEvent();
 		this.fireEvent(addRecipeEvent);
@@ -313,11 +230,6 @@ class MainPane extends BorderPane {
 	
 	private void editRecipe() {
 		System.out.println("Edit recipe clicked.");
-	}
-	
-	
-	public void add() {
-		System.out.println("Add recipe clicked.");
 	}
 	
 	

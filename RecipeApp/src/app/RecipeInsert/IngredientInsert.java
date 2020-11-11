@@ -21,15 +21,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+// window for adding an ingredient
 public class IngredientInsert extends Stage {
 	
 	double height =	200;
 	double width = 400;
 	Label label = new Label();
-	//Stage stage = new Stage();
-	RecipeInsertPane callingClass = null;
-	
-	String ingredientDisplay = "";
 	
 	// NAME
 	Text name = new Text( "Name:" );
@@ -130,6 +127,7 @@ public class IngredientInsert extends Stage {
 		hbox.getChildren().add(done);
 		grid_pane.add(hbox, 1, 7, 3, 1);
 		
+		// creates new ingredient and closes window
 		done.setOnAction((e) -> {
 			ingredient = new Ingredient();
         	
@@ -139,10 +137,6 @@ public class IngredientInsert extends Stage {
         	ingredient.metric 	= (String) combo_box.getValue();
         	
         	this.close();
-        	/*
-			Event event = new AddIngredientEvent(ingredient);
-			System.out.println("firing event");
-			fireEvent(event);*/
 		});
 
 		scene = new Scene( grid_pane, width, height );
@@ -152,7 +146,7 @@ public class IngredientInsert extends Stage {
 		setScene( scene );
 	}
 	
-	
+	// constructor for editing an existing ingredient
 	public IngredientInsert(Ingredient ingredient) {
 		
 		this.ingredient = ingredient;
@@ -164,6 +158,8 @@ public class IngredientInsert extends Stage {
 		name_text.setText(ingredient.name);
 		category_text.setText(ingredient.category);
 		qty_text.setText(Float.toString(ingredient.qty));
+		
+		// if metric is not null and it matches one of the options in the combo box, select that item
 		for(int i = 0; i < metrics.length; i++) {
 			
 			if(ingredient.metric != null && ingredient.metric.equals(metrics[i])) {
@@ -241,6 +237,7 @@ public class IngredientInsert extends Stage {
         	float qty = Float.parseFloat( qty_text.getText() );
         	String metric = (String) combo_box.getValue();
         	
+        	// detect if the ingredient has actually changed
         	if(!newName.equals(ingredient.name)) 
         		ingredientChanged = true;
         	

@@ -48,20 +48,16 @@ import app.Events.InsertRecipeToDatabaseEvent;
 
 public class RecipeInsertPane extends GridPane {
 	
+	// holds the ingredient insert pane 
 	private IngredientInsert ingredientInsert;
-
+	
+	// displays the ingredients added
+	IngredientListView ingredientsListView = new IngredientListView(800);
+	
 	// contains the ingredients that will be added to the db
 	public ArrayList<Ingredient> ingredients_to_add = new ArrayList<>();
 	
-	IngredientListView ingredientsListView = new IngredientListView(800);
-	// contains strings to actually display the added ingredients for this pane
-	ListView<String> ingredientsList = new ListView<String>();
 	
-	/**	so it seems that this FXCollections observable list will
-	 * 	only work if it has at least two items in it;
-	 * because of this I added two empty strings to start it;
-	 */
-	ObservableList<String> items = FXCollections.observableArrayList("","");
 	
 	public RecipeInsertPane() {
 		
@@ -72,9 +68,8 @@ public class RecipeInsertPane extends GridPane {
 		setHgap( 20 );
 		setAlignment(Pos.TOP_CENTER);
 		
-		// add the observable list items to the listview
-		ingredientsList.setItems(items);
 		
+		// DELETE INGREDIENT EVENT
 		ingredientsListView.addEventHandler(DeleteIngredientEvent.DELETE_INGREDIENT, new EventHandler<DeleteIngredientEvent>() {
 
 			@Override
@@ -85,6 +80,7 @@ public class RecipeInsertPane extends GridPane {
 			
 		});
 		
+		// EDIT INGREDIENT EVENT
 		ingredientsListView.addEventHandler(EditIngredientEvent.EDIT_INGREDIENT, new EventHandler<EditIngredientEvent>() {
 			@Override
 			public void handle(EditIngredientEvent event) {
@@ -151,6 +147,7 @@ public class RecipeInsertPane extends GridPane {
 		
 		// actions for these buttons
 		
+		// FIRE RECIPE INSERT EVENT
 		done_button.setOnAction((e) -> {
 			System.out.println( "recipe done" );
             Recipe recipe = new Recipe( -1, title_text.getText(), 
@@ -162,28 +159,8 @@ public class RecipeInsertPane extends GridPane {
             this.fireEvent(insertRecipe);
             
 		});
-		/*
-		done_button.setOnAction(new EventHandler<ActionEvent>() {
-			 
-            public void handle( ActionEvent event ) {
-                System.out.println( "recipe done" );
-                Recipe recipe = new Recipe( -1, title_text.getText(), 
-                							write_up_text.getText(), 
-                							getIngredients() );
-                System.out.println( recipe );
-                /*
-                RecipeDBManager db = new RecipeDBManager( "test_db" );
-                db.insert_recipe( recipe.name, 
-                				  recipe.write_up, 
-                				  recipe.ingredients );
-                clearPane();*/
-		/*
-                Event insertRecipe = new InsertRecipeToDatabaseEvent(recipe);
-                this.fireEvent(insertRecipe);
-            }
-            
-        });*/
 		
+		// FIRE CLOSE EVENT
 		cancel_button.setOnAction((e)-> {
 			Event event = new CloseEvent();
 			fireEvent(event);
@@ -196,7 +173,6 @@ public class RecipeInsertPane extends GridPane {
 		add( title_text,		0, 1, 3, 1 );
 		add( ingredients,	 	0, 2, 1, 1 );	
 		add( add_ingredient, 	1, 2, 1, 1 );
-		//add( ingredientsList, 	0, 3, 2, 1 );
 		add( ingredientsListView, 	0, 3, 2, 1 );
 		add( write_up, 		 	2, 2, 1, 1 );
 		add( write_up_text, 	2, 3, 1, 1 );
@@ -208,12 +184,7 @@ public class RecipeInsertPane extends GridPane {
 		return ingredients_to_add;
 	}
 	
-	public void clearPane() {
-		Parent parent = getParent();
-		AdminPane pane = ( AdminPane )parent;		
-		pane.setCenterPane();
-	}
-	
+	// displays ingredient insert window, fires event when closed
 	public void addIngredient() {
 		IngredientInsert ins = new IngredientInsert();
 		ins.show();
@@ -229,6 +200,7 @@ public class RecipeInsertPane extends GridPane {
 		
 	}
 	
+	// opens the ingredient insert pane but with an existing ingredient
 	public void editIngredient(Ingredient editIngredient) {
 		IngredientInsert ins = new IngredientInsert(editIngredient);
 		ins.show();
@@ -246,12 +218,11 @@ public class RecipeInsertPane extends GridPane {
 		});
 	}
 	
+	// deletes ingredient from ingredients being passed to db
 	public void deleteIngredient(Ingredient deleteIngredient)
 	{
 		ingredients_to_add.remove(deleteIngredient);
 	}
-	
-	public void addToIngredientsList(String ingr) { items.add(ingredients_to_add.size()-1,ingr); }
 	
 }
 

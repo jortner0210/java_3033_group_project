@@ -149,10 +149,7 @@ public class IngredientListView extends BorderPane {
 			vBox.setStyle("-fx-border-style: hidden;");
 		}
 		
-		//ingredientItems.remove(ingredientItem);
 		resetStyles();
-		
-		//selectedIngredient = null;
 		buttonBox = null;
 		setCenter(null);
 	}
@@ -162,10 +159,6 @@ public class IngredientListView extends BorderPane {
 			IngredientListViewItem item = (IngredientListViewItem) node;
 			item.updateCount();
 		}
-		/*
-		for(int i = 0; i < ingredientItems.size(); i++ ) {
-			ingredientItems.get(i).updateCount();
-		}*/
 	}
 	
 	private void showButtons() {

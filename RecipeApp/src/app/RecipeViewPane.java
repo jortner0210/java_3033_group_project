@@ -142,7 +142,7 @@ public class RecipeViewPane extends BorderPane {
 		
 		double spacing = 5;
 		
-		RecipeInfoView( ) {
+		RecipeInfoView() {
 			labels.add(prepTimeLabel);
 			labels.add(cookTimeLabel);
 			labels.add(totalTimeLabel);
