@@ -3,8 +3,10 @@ package app;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.Events.CloseRecipeEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -53,7 +55,7 @@ public class RecipeViewPane extends BorderPane {
 	// I used this alot so I saved it. This way if we decide to change it, it's easy
 	String fontFamily = "Abyssinicia SIL";
 	
-	public RecipeViewPane(int id ) {
+	public RecipeViewPane(Recipe recipe ) {
 		
 		// some set up
 		scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
@@ -63,7 +65,7 @@ public class RecipeViewPane extends BorderPane {
 
 	
 		// get recipe
-		recipe = db.get_recipe(id);
+		this.recipe = recipe;
 		
 		// convert ingredients into strings in the right format and then into Texts
 		for ( Ingredient ingredient : recipe.ingredients ) {
@@ -101,9 +103,10 @@ public class RecipeViewPane extends BorderPane {
 		Button close = new Button("close");
 		
 		close.setOnAction(e -> {
-			Parent parent = getParent();
-			AdminPane pane = (AdminPane) parent;
-			pane.setCenterPane();
+			Event closeRecipe = new CloseRecipeEvent(recipe);
+			this.fireEvent(closeRecipe);
+			
+			
 		});
 		
 		// format the bottom button

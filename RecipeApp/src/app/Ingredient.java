@@ -20,6 +20,15 @@ public class Ingredient {
 		this.category = category;
 	}
 	
+	public Ingredient(Ingredient ingredient)
+	{
+		this.id = ingredient.id;
+		this.qty = ingredient.qty;
+		this.metric = ingredient.metric;
+		this.name = ingredient.name;
+		this.category = ingredient.category;
+	}
+	
 	public String toString() {
 		return "id="+id+",qty="+qty+",metric="+metric+",name="+name+",category="+category+"\n";
 	}

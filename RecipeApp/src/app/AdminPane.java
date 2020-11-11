@@ -66,7 +66,7 @@ public class AdminPane extends BorderPane {
 	
 	private void viewRecipe() {
 		System.out.println("View recipe clicked.");
-		RecipeViewPane pane = new RecipeViewPane(9);
+		//RecipeViewPane pane = new RecipeViewPane(9);
 		setCenter( pane );
 		
 	}

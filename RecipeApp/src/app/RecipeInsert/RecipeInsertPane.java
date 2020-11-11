@@ -30,21 +30,30 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 
 import java.util.*;
 
 import app.AdminPane;
 import app.Ingredient;
+import app.IngredientListView;
 import app.Recipe;
 import app.RecipeDBManager;
+import app.Events.AddIngredientEvent;
+import app.Events.CloseEvent;
+import app.Events.DeleteIngredientEvent;
+import app.Events.EditIngredientEvent;
+import app.Events.InsertRecipeToDatabaseEvent;
 
 public class RecipeInsertPane extends GridPane {
 	
+	private IngredientInsert ingredientInsert;
 
 	// contains the ingredients that will be added to the db
 	public ArrayList<Ingredient> ingredients_to_add = new ArrayList<>();
 	
+	IngredientListView ingredientsListView = new IngredientListView(800);
 	// contains strings to actually display the added ingredients for this pane
 	ListView<String> ingredientsList = new ListView<String>();
 	
@@ -65,6 +74,24 @@ public class RecipeInsertPane extends GridPane {
 		
 		// add the observable list items to the listview
 		ingredientsList.setItems(items);
+		
+		ingredientsListView.addEventHandler(DeleteIngredientEvent.DELETE_INGREDIENT, new EventHandler<DeleteIngredientEvent>() {
+
+			@Override
+			public void handle(DeleteIngredientEvent event) {
+				Ingredient ingredientToDelete = event.getIngredient();
+				deleteIngredient(ingredientToDelete);
+			}
+			
+		});
+		
+		ingredientsListView.addEventHandler(EditIngredientEvent.EDIT_INGREDIENT, new EventHandler<EditIngredientEvent>() {
+			@Override
+			public void handle(EditIngredientEvent event) {
+				Ingredient ingredientToEdit = event.getIngredient();
+				editIngredient(ingredientToEdit);
+			}
+		});
 		
 		// set up the widths of the columns
 		ColumnConstraints col0 = new ColumnConstraints(100);
@@ -123,6 +150,18 @@ public class RecipeInsertPane extends GridPane {
 		GridPane.setHalignment(flowPane, HPos.RIGHT);
 		
 		// actions for these buttons
+		
+		done_button.setOnAction((e) -> {
+			System.out.println( "recipe done" );
+            Recipe recipe = new Recipe( -1, title_text.getText(), 
+            							write_up_text.getText(), 
+            							getIngredients() );
+            System.out.println( recipe );
+            Event insertRecipe = new InsertRecipeToDatabaseEvent(recipe);
+            this.fireEvent(insertRecipe);
+            
+		});
+		/*
 		done_button.setOnAction(new EventHandler<ActionEvent>() {
 			 
             public void handle( ActionEvent event ) {
@@ -131,23 +170,33 @@ public class RecipeInsertPane extends GridPane {
                 							write_up_text.getText(), 
                 							getIngredients() );
                 System.out.println( recipe );
+                /*
                 RecipeDBManager db = new RecipeDBManager( "test_db" );
                 db.insert_recipe( recipe.name, 
                 				  recipe.write_up, 
                 				  recipe.ingredients );
-                clearPane();
+                clearPane();*/
+		/*
+                Event insertRecipe = new InsertRecipeToDatabaseEvent(recipe);
+                this.fireEvent(insertRecipe);
             }
             
-        });
+        });*/
 		
-		cancel_button.setOnAction(e -> clearPane());
+		cancel_button.setOnAction((e)-> {
+			Event event = new CloseEvent();
+			fireEvent(event);
+		});
+		
+		
 		
 		// col, row, col span, row span
 		add( title,    		 	0, 0, 3, 1 );
 		add( title_text,		0, 1, 3, 1 );
 		add( ingredients,	 	0, 2, 1, 1 );	
 		add( add_ingredient, 	1, 2, 1, 1 );
-		add( ingredientsList, 	0, 3, 2, 1 );
+		//add( ingredientsList, 	0, 3, 2, 1 );
+		add( ingredientsListView, 	0, 3, 2, 1 );
 		add( write_up, 		 	2, 2, 1, 1 );
 		add( write_up_text, 	2, 3, 1, 1 );
 		add( flowPane,			2, 4, 1, 1 );
@@ -165,12 +214,45 @@ public class RecipeInsertPane extends GridPane {
 	}
 	
 	public void addIngredient() {
-		IngredientInsert ins = new IngredientInsert(this);
+		IngredientInsert ins = new IngredientInsert();
 		ins.show();
+		
+		ins.setOnHiding((event) -> {
+			System.out.println("hidden");
+			Ingredient ingredient = ins.getIngredient();
+			if(ingredient != null) {
+				ingredientsListView.addIngredient(ingredient);
+				ingredients_to_add.add(ingredient);
+			}
+		});
+		
+	}
+	
+	public void editIngredient(Ingredient editIngredient) {
+		IngredientInsert ins = new IngredientInsert(editIngredient);
+		ins.show();
+		
+		ins.setOnHiding((event) -> {
+			System.out.println("hidden");
+			Ingredient ingredient = ins.getIngredient();
+			if(ingredient != null) {
+				if(ins.getIngredientChanged()) {
+					ingredientsListView.updateIngredient(ingredient);
+					ingredients_to_add.add(ingredient);
+				}
+				
+			}
+		});
+	}
+	
+	public void deleteIngredient(Ingredient deleteIngredient)
+	{
+		ingredients_to_add.remove(deleteIngredient);
 	}
 	
 	public void addToIngredientsList(String ingr) { items.add(ingredients_to_add.size()-1,ingr); }
 	
-		
-
 }
+
+
+

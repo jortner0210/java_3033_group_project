@@ -1,6 +1,7 @@
 package app;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DBManager {
 	
@@ -75,16 +76,31 @@ public class DBManager {
 	 * Returns ResultSet
 	 */
 	public ResultSet execute_query( String query ) {
+		Statement stmt;
 		if ( conn == null )
 			return null;
 		try {
-			Statement stmt = conn.createStatement();
-			return stmt.executeQuery( query );
+			stmt = conn.createStatement();
+			
+			return stmt.executeQuery( query);
+			
 		}
 		catch ( Exception e ) {
 			System.out.println( e );
 			e.printStackTrace();
 			return null;
+		}
+		
+	}
+	
+	public void close() {
+		try {
+			if(conn != null)
+				conn.close();
+			System.out.println("connection closed");
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 	}
 

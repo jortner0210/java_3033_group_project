@@ -6,11 +6,19 @@ import java.util.*;
 public class RecipeDBManager {
 	
 	DBManager db;
+	String db_name;
 	
 	public RecipeDBManager( String db_name ) {
+		this.db_name = db_name;
 		db = new DBManager();
 		db.connect_db( db_name );
 	}
+	
+	public void reconnect() {
+		db.connect_db(db_name);
+	}
+	
+	
 	
 	/*
 	 * insert ingredient into ingredient table
@@ -35,7 +43,9 @@ public class RecipeDBManager {
 				prep_stmt.execute();
 				result = db.execute_query( ingredient_check  + ingredient.name + "'" );
 				in_id = result.getInt( "inid" );
+				try { if(prep_stmt != null)  prep_stmt.close();  } catch (Exception e) {}
 			}
+			try { if(result != null)  result.close();  } catch (Exception e) {}
 		}
 		catch ( SQLException e ){
 			System.out.println( e );
@@ -58,6 +68,8 @@ public class RecipeDBManager {
 			prep_stmt.execute();
 			ResultSet result = db.execute_query( recipe_check );
 			rid = result.getInt( "count" );
+			try { if(prep_stmt != null)  prep_stmt.close();  } catch (Exception e) {}
+			try { if(result != null)  result.close();  } catch (Exception e) {}
 			
 		}
 		catch ( Exception e ) {
@@ -86,6 +98,7 @@ public class RecipeDBManager {
 				prep_stmt.setFloat( 3, i.qty );
 				prep_stmt.setString( 4, i.metric );
 				prep_stmt.execute();
+				try { if(prep_stmt != null)  prep_stmt.close();  } catch (Exception e) {}
 			}
 		}
 		catch ( Exception e ) {
@@ -120,7 +133,9 @@ public class RecipeDBManager {
 				ingredients.add( curr_ingredient );
 				
 				System.out.println( curr_ingredient );
+				try { if(ingredient_result != null)  ingredient_result.close();  } catch (Exception e) {}
 			}
+			try { if(contains_result != null)  contains_result.close();  } catch (Exception e) {}
 		}
 		catch ( Exception e ) {
 			System.out.println( e );
@@ -162,6 +177,7 @@ public class RecipeDBManager {
 		         
 		         i++;
 			}
+			try { if(result != null)  result.close();  } catch (Exception e) {}
 			
 		}
 		catch ( Exception e ) {
@@ -184,7 +200,8 @@ public class RecipeDBManager {
 	        //Display values
 	        System.out.print( "ID: " + id );
 	        System.out.print( ", Name: " + recipe.name );
-	        System.out.print( ", write_up: " + recipe.write_up + "\n" );			
+	        System.out.print( ", write_up: " + recipe.write_up + "\n" );
+	        try { if(result != null)  result.close();  } catch (Exception e) {}
 		}
 		catch ( Exception e ) {
 			System.out.println( e );
@@ -212,12 +229,20 @@ public class RecipeDBManager {
 		        System.out.print( ", write_up: " + recipe.write_up + "\n" );	
 		        recipes.add( recipe );
 			}
+			try { if(result != null)  result.close();  } catch (Exception e) {}
+			db.close();
+			
 			
 		}
 		catch ( Exception e ) {
 			System.out.println( e );
 		}
 		return recipes;
+	}
+	
+	public void close() {
+		System.out.println("calling db close");
+		db.close();
 	}
 	
 
