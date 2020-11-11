@@ -60,7 +60,7 @@ public class RecipeListView extends BorderPane {
 		});
 		
 		
-		db.close();
+		//db.close();
 		
 		setTop(vBox);
 	}

@@ -216,6 +216,7 @@ class MainPane extends BorderPane {
 	
 	private void deleteRecipe( RecipeDBManager db ) {
 		System.out.println("Delete recipe clicked.");
+		db.reconnect();
 		try {
 			int selected_id = recipeListView.getSelectedRecipeID();
 			if ( selected_id > 0 ) {
