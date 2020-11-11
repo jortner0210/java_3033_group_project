@@ -264,6 +264,16 @@ public class RecipeDBManager {
 		return recipes;
 	}
 	
+	public void delete_recipe( int id ) {
+		String sql = "DELETE FROM recipe WHERE rid = " + id;
+		try {
+			db.execute_update( sql );
+		}
+		catch ( Exception e ) {
+			System.out.println( e );
+		}
+	}
+	
 	public void close() {
 		System.out.println("calling db close");
 		db.close();

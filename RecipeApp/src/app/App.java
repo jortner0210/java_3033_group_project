@@ -1,5 +1,6 @@
 package app;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -279,7 +280,7 @@ class MainPane extends BorderPane {
 		
 		btEditRecipe.setOnAction(e -> editRecipe());
 		
-		btDeleteRecipe.setOnAction(e -> deleteRecipe());
+		btDeleteRecipe.setOnAction(e -> deleteRecipe( db ) );
 		
 	}
 	
@@ -296,8 +297,18 @@ class MainPane extends BorderPane {
 		this.fireEvent(addRecipeEvent);
 	}
 	
-	private void deleteRecipe() {
+	private void deleteRecipe( RecipeDBManager db ) {
 		System.out.println("Delete recipe clicked.");
+		try {
+			int selected_id = recipeListView.getSelectedRecipeID();
+			if ( selected_id > 0 ) {
+				System.out.println( "id is fine - " + selected_id );
+				db.delete_recipe( selected_id );
+			}
+		}
+		catch ( Exception e ){
+			System.out.println( e );
+		}
 	}
 	
 	private void editRecipe() {

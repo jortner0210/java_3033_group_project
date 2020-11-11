@@ -89,6 +89,8 @@ public class RecipeListView extends BorderPane {
 	}
 	
 	public Recipe getSelectedRecipe() { return selectedRecipe.getRecipe(); }
+	
+	public int getSelectedRecipeID() { return selectedRecipe.getID(); }
 }
 
 
