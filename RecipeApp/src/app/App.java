@@ -19,7 +19,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -220,8 +223,16 @@ class MainPane extends BorderPane {
 		try {
 			int selected_id = recipeListView.getSelectedRecipeID();
 			if ( selected_id > 0 ) {
-				System.out.println( "id is fine - " + selected_id );
-				db.delete_recipe( selected_id );
+				// alert user and delete if okay
+				Alert alert = new Alert( AlertType.NONE );
+				alert.setAlertType( AlertType.CONFIRMATION ); 
+				alert.setContentText( "Are you sure you want to delete recipe?" );
+				alert.showAndWait().ifPresent( e -> {
+				    ButtonType b = alert.getResult();
+				    if ( b.getText().equals( "OK" ) ) {
+				    	db.delete_recipe( selected_id );
+				    }
+				});
 			}
 		}
 		catch ( Exception e ){
