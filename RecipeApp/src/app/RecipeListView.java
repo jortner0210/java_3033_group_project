@@ -10,6 +10,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -30,12 +32,17 @@ public class RecipeListView extends BorderPane {
 	private Button showRecipeBtn;
 	private HBox buttonBox;
 	private double height;
+	// this will be the center
+	ScrollPane scrollPane = new ScrollPane();
 	
 	public RecipeListView(double height, RecipeDBManager db) {
+		
+		scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.db = db;
 		this.height = height;
 		recipes = db.get_all_recipes();
-		vBox.setStyle("-fx-border-color: green;");
+		vBox.setMinSize(900,1000);
 		vBox.setMaxHeight(height * 0.8);
 		vBox.setAlignment(Pos.TOP_CENTER);
 		for(Recipe recipe : recipes) {
@@ -54,16 +61,26 @@ public class RecipeListView extends BorderPane {
 						
 						selectedRecipe = (RecipeListViewItem) event.getTarget();
 						System.out.println(selectedRecipe.getID() + " selected ");
-						showRecipeButton();
-						
+						if(selectedRecipe.isSelected()) {
+							showRecipeButton();
+						}
+						else {
+							buttonBox = null;
+							setBottom(null);
+							selectedRecipe = null;
+						}
+							
 					}
 			
 		});
 		
 		
 		//db.close();
+		scrollPane.setContent(vBox);
+		scrollPane.setFitToWidth(true);
+		setCenter(scrollPane);
 		
-		setTop(vBox);
+		//setTop(scrollPane);
 	}
 	
 	public void refresh() {
@@ -74,6 +91,8 @@ public class RecipeListView extends BorderPane {
 			item.setPrefHeight(100);
 			vBox.getChildren().add(item);
 		}
+		buttonBox = null;
+		setBottom(null);
 		
 	}
 	
@@ -97,7 +116,8 @@ public class RecipeListView extends BorderPane {
 				this.fireEvent(showRecipe);
 			});
 			
-			setCenter(buttonBox);
+			//setCenter(buttonBox);
+			setBottom(buttonBox);
 		}
 	}
 	
@@ -152,7 +172,11 @@ class RecipeListViewItem extends HBox {
 						FontWeight.BOLD,
 						20));
 		Background originalBackground = this.getBackground();
-		this.setOnMouseEntered(e -> this.setBackground(mediumGreyBackground));
+		
+		this.setOnMouseEntered((e) -> {
+			if(!selected)
+				this.setBackground(mediumGreyBackground);
+		});
 		this.setOnMouseExited((e) -> {
 			if(selected) {
 				this.setBackground(darkGreyBackground);
@@ -162,9 +186,15 @@ class RecipeListViewItem extends HBox {
 		});
 		
 		this.setOnMouseClicked((e) -> {
-			setSelected();
-			Event recipeSelected = new SelectedRecipeEvent();
-			this.fireEvent(recipeSelected);
+			if(selected) {
+				unselect();
+			}
+			if(!selected) {
+				setSelected();
+				Event recipeSelected = new SelectedRecipeEvent();
+				this.fireEvent(recipeSelected);
+			}
+			
 		});
 		
 		
@@ -200,7 +230,7 @@ class RecipeListViewItem extends HBox {
 	
 	public void resetCount() { count = 0; }
 	
-	
+	public boolean isSelected() { return selected; }
 	
 	public int getID() { return id; }
 	
