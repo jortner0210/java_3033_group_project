@@ -65,31 +65,18 @@ public class RecipeListView extends BorderPane {
 		
 		setTop(vBox);
 	}
-	public void addRecipeToView( Recipe recipe ) {
-		System.out.println("list view received recipe");
-		RecipeListViewItem item = new RecipeListViewItem(recipe);
-		item.setPrefHeight(100);
-		vBox.getChildren().add(item);
-	}
 	
-	public void removeRecipeFromView (  ) {
-		RecipeListViewItem toDelete = selectedRecipe;
-		//selectedRecipe.unselect();
-		selectedRecipe.resetCount();
-		vBox.getChildren().remove(toDelete);
-		resetStyles();
-		/*
-		for(Node node : vBox.getChildren() ) {
-			RecipeListViewItem item = (RecipeListViewItem) node;
-			if(item.getRecipe() == recipe) {
-				System.out.println(item.getRecipe().name + " being deleted");
-				vBox.getChildren().remove(node);
-				
-				break;
-			}
-		}*/
+	public void refresh() {
+		recipes = db.get_all_recipes();
+		vBox.getChildren().clear();
+		for(Recipe recipe : recipes) {
+			RecipeListViewItem item = new RecipeListViewItem(recipe);
+			item.setPrefHeight(100);
+			vBox.getChildren().add(item);
+		}
 		
 	}
+	
 	
 	private void showRecipeButton() {
 		if ( buttonBox == null ) {
@@ -114,12 +101,7 @@ public class RecipeListView extends BorderPane {
 		}
 	}
 	
-	private void resetStyles() {
-		for(Node node : vBox.getChildren()) {
-			RecipeListViewItem item = (RecipeListViewItem) node;
-			item.updateCount();
-		}
-	}
+	
 	
 	public Recipe getSelectedRecipe() { return selectedRecipe.getRecipe(); }
 	
@@ -230,6 +212,7 @@ class RecipeListViewItem extends HBox {
 	}
 	
 	private void setSelected() {
+		System.out.println(id + "selected item");
 		selected = true;
 		this.setBackground(darkGreyBackground);
 	}

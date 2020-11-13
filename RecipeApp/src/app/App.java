@@ -134,9 +134,14 @@ class Controller {
 		public void handle(InsertRecipeToDatabaseEvent event) {
 			System.out.println("main insertrecipehandler");
 			Recipe recipe = (Recipe) event.getRecipe();
-			mainPane.showNewRecipe(recipe);
+			
+			
 			db.reconnect();
 			db.insert_recipe(recipe.name, recipe.write_up, recipe.prepTime, recipe.cookTime, recipe.totalTime, recipe.yield, recipe.ingredients);
+			db.close();
+			
+			db.reconnect();
+			mainPane.showNewRecipe();
 			db.close();
 			closeWindow();
 		}
@@ -230,8 +235,8 @@ class MainPane extends BorderPane {
 				    ButtonType b = alert.getResult();
 				    if ( b.getText().equals( "OK" ) ) {
 				    	db.delete_recipe( selected_id );
-
-						recipeListView.removeRecipeFromView();
+				    	recipeListView.refresh();
+						//recipeListView.removeRecipeFromView();
 				    }
 				});
 			}
@@ -239,12 +244,17 @@ class MainPane extends BorderPane {
 		catch ( Exception e ){
 			System.out.println( e );
 		}
+		finally {
+			db.close();
+		}
 		
 	}
 	
-	public void showNewRecipe( Recipe recipe ) {
+	public void showNewRecipe(  ) {
 		System.out.println("main pane new recipe");
-		recipeListView.addRecipeToView(recipe);
+		//
+		//recipeListView.addRecipeToView(recipe);
+		recipeListView.refresh();
 	}
 	
 	
