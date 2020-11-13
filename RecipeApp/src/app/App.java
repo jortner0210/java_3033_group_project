@@ -99,6 +99,7 @@ class Controller {
 	private void closeWindow() {
 		scenes.pop();
 		primaryStage.setScene(scenes.peek());
+		
 	}
 	
 	// opens a new scene
@@ -133,6 +134,7 @@ class Controller {
 		public void handle(InsertRecipeToDatabaseEvent event) {
 			System.out.println("main insertrecipehandler");
 			Recipe recipe = (Recipe) event.getRecipe();
+			mainPane.showNewRecipe(recipe);
 			db.reconnect();
 			db.insert_recipe(recipe.name, recipe.write_up, recipe.prepTime, recipe.cookTime, recipe.totalTime, recipe.yield, recipe.ingredients);
 			db.close();
@@ -174,7 +176,6 @@ class MainPane extends BorderPane {
 
 	public Button btAddRecipe = new Button("Add Recipe");
 	public Button btDeleteRecipe = new Button("Delete Recipe");
-	public Button btEditRecipe = new Button("Edit Recipe");
 	public RecipeListView recipeListView;
 	
 	StackPane pane = new StackPane();
@@ -187,7 +188,7 @@ class MainPane extends BorderPane {
 		HBox hBox = new HBox(15);
 		hBox.setPadding(new Insets(15));
 		hBox.setStyle("-fx-border-color: black");
-		hBox.getChildren().addAll(btAddRecipe, btDeleteRecipe, btEditRecipe);
+		hBox.getChildren().addAll(btAddRecipe, btDeleteRecipe);
 		hBox.setAlignment(Pos.CENTER_LEFT);
 		setTop(hBox);
 		
@@ -195,8 +196,6 @@ class MainPane extends BorderPane {
 		
 		
 		btAddRecipe.setOnAction(e -> addRecipe());
-		
-		btEditRecipe.setOnAction(e -> editRecipe());
 		
 		btDeleteRecipe.setOnAction(e -> deleteRecipe( db ) );
 		
@@ -231,6 +230,8 @@ class MainPane extends BorderPane {
 				    ButtonType b = alert.getResult();
 				    if ( b.getText().equals( "OK" ) ) {
 				    	db.delete_recipe( selected_id );
+
+						recipeListView.removeRecipeFromView();
 				    }
 				});
 			}
@@ -238,11 +239,15 @@ class MainPane extends BorderPane {
 		catch ( Exception e ){
 			System.out.println( e );
 		}
+		
 	}
 	
-	private void editRecipe() {
-		System.out.println("Edit recipe clicked.");
+	public void showNewRecipe( Recipe recipe ) {
+		System.out.println("main pane new recipe");
+		recipeListView.addRecipeToView(recipe);
 	}
+	
+	
 	
 	
 }

@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -64,6 +65,31 @@ public class RecipeListView extends BorderPane {
 		
 		setTop(vBox);
 	}
+	public void addRecipeToView( Recipe recipe ) {
+		System.out.println("list view received recipe");
+		RecipeListViewItem item = new RecipeListViewItem(recipe);
+		item.setPrefHeight(100);
+		vBox.getChildren().add(item);
+	}
+	
+	public void removeRecipeFromView (  ) {
+		RecipeListViewItem toDelete = selectedRecipe;
+		//selectedRecipe.unselect();
+		selectedRecipe.resetCount();
+		vBox.getChildren().remove(toDelete);
+		resetStyles();
+		/*
+		for(Node node : vBox.getChildren() ) {
+			RecipeListViewItem item = (RecipeListViewItem) node;
+			if(item.getRecipe() == recipe) {
+				System.out.println(item.getRecipe().name + " being deleted");
+				vBox.getChildren().remove(node);
+				
+				break;
+			}
+		}*/
+		
+	}
 	
 	private void showRecipeButton() {
 		if ( buttonBox == null ) {
@@ -85,6 +111,13 @@ public class RecipeListView extends BorderPane {
 			});
 			
 			setCenter(buttonBox);
+		}
+	}
+	
+	private void resetStyles() {
+		for(Node node : vBox.getChildren()) {
+			RecipeListViewItem item = (RecipeListViewItem) node;
+			item.updateCount();
 		}
 	}
 	
@@ -175,6 +208,17 @@ class RecipeListViewItem extends HBox {
 		
 		setStyle(style);
 	}
+	
+	public void updateCount()
+	{
+		//System.out.println("ingredientlistviewitem " + ingredientText.getText() + " count " + count);
+		count++;
+		setStyle();
+	}
+	
+	public void resetCount() { count = 0; }
+	
+	
 	
 	public int getID() { return id; }
 	
