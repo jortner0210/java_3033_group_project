@@ -77,7 +77,7 @@ class Controller {
 	// constructor starts db, then adds the main pane to it
 	public Controller(Stage primaryStage) 
 	{
-		db = new RecipeDBManager( "test_db" );
+		db = new RecipeDBManager( "final_db" );
 		this.primaryStage = primaryStage;
 		primaryStage.centerOnScreen();
 		primaryStage.setWidth(width);
