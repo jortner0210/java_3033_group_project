@@ -1,5 +1,7 @@
 package app;
 
+
+// stores data for a single ingredient
 public class Ingredient {
 
 	public int id;
@@ -12,6 +14,7 @@ public class Ingredient {
 		
 	}
 	
+	// set instance variables
 	public Ingredient( int id, float qty, String metric, String name, String category ) {
 		this.id = id;
 		this.qty = qty;
@@ -20,6 +23,7 @@ public class Ingredient {
 		this.category = category;
 	}
 	
+	// copy constructor
 	public Ingredient(Ingredient ingredient)
 	{
 		this.id = ingredient.id;

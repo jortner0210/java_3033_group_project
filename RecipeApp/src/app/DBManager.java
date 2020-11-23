@@ -3,14 +3,21 @@ package app;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * This class manages the database and serves as a parent to RecipeDBManager.
+ * If a user or any other type of database were to be implemented they would 
+ * use this class
+ */
 public class DBManager {
 	
+	// instance variables
 	Connection conn = null;
 	String name = null;
 	
 	final String BASE_LOC = "jdbc:sqlite:";	
 	final int FAILED_EXECUTE = -1;
 	
+	// used to access db 
 	public Connection get_connection() {
 		return conn;
 	}
@@ -93,6 +100,7 @@ public class DBManager {
 		
 	}
 	
+	// IMPORTANT! closes so the db file does not stay locked
 	public void close() {
 		try {
 			if(conn != null)

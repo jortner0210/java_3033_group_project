@@ -61,6 +61,8 @@ public class IngredientInsert extends Stage {
 	
 	boolean ingredientChanged = false;
 	
+	// this is the default; it automatically puts all fields empty
+	// the other constructor populates the fields with previous data
 	public IngredientInsert() {
 		
 		ingredientChanged = true;
@@ -171,7 +173,6 @@ public class IngredientInsert extends Stage {
 		}
 		
 		
-		
 		// set up column widths
 		ColumnConstraints col0 = new ColumnConstraints();
 		col0.setMinWidth(75);
@@ -210,8 +211,6 @@ public class IngredientInsert extends Stage {
 		});
 		
 		qtyError.setVisible(false);
-		//done.setDisable(true);
-		
 		
 		// col, row, col span, row span
 		grid_pane.add( name,     0, 1, 1, 1 );

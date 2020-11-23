@@ -1,11 +1,6 @@
 package app;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Stack;
-
-//import org.sqlite.core.DB;
-
 import app.Events.AddRecipeEvent;
 import app.Events.CloseEvent;
 import app.Events.CloseRecipeEvent;
@@ -23,28 +18,23 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
-
+// entry point to the application
 public class App extends Application {
 	
-	private final double heightPercentage = 0.9;
-	private final double widthPercentage = 0.8;
 	
 	
 	@Override
 	public void start(Stage primaryStage) {
 		// start controller
+		// this will manage all the scenes and events
 		Controller controller = new Controller(primaryStage);
 	}
 	
@@ -55,42 +45,72 @@ public class App extends Application {
 	}
 }
 
-// manages the screens
+/**
+ * Controller class manages all of the data flow from a centralized point.
+ * It is responsible for managing multiple scenes that might be
+ * active at once but not displayed at the same time.
+ * 
+ * It handles the event flow from different areas in the application.
+ * 
+ * @author jlafever
+ *
+ */
 class Controller {
 	
+	/**
+	 * First we determine the user's primary screen height,
+	 * then we size our application to a given percentage of that height.
+	 */
 	double heightPercentage = 0.9;
-	
-	// get screen size
 	Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-	
-	// convert window size to specified percentage
 	double height = screenBounds.getHeight() * heightPercentage;
 
+	// make the application window a square
 	double width = height;
-	Scene scene;
 	
-	MainPane mainPane;
-	Stack<Scene> scenes = new Stack<Scene>();
-	Stage primaryStage;
-	RecipeDBManager db;
+	// this scene will hold the MainPane (list view of recipes)
+	private Scene scene;
+	
+	// list view of recipes
+	private MainPane mainPane;
+	
+	// this stack is used to manage multiple scenes at once;
+	// the one on top will be the one displayed
+	private Stack<Scene> scenes = new Stack<Scene>();
+	
+	// the same stage is used throughout
+	private Stage primaryStage;
+	
+	// single instance of the database manager
+	// NOTE: if there are more instances the db file might be locked!
+	private RecipeDBManager db;
 	
 	// constructor starts db, then adds the main pane to it
 	public Controller(Stage primaryStage) 
 	{
+		// connect to database
 		db = new RecipeDBManager( "final_db" );
+		
+		// set stage formatting
 		this.primaryStage = primaryStage;
 		primaryStage.centerOnScreen();
 		primaryStage.setWidth(width);
 		primaryStage.setHeight(height);
 		primaryStage.setResizable(false);
+		
+		// instantiate the MainPane that will show the recipes in the database
 		mainPane = new MainPane(height, db);
+		
+		// handle onClick events from MainPane
 		mainPane.addEventHandler(AddRecipeEvent.ADD_RECIPE, new AddRecipeHandler());
 		mainPane.addEventHandler(ShowRecipeEvent.SHOW_RECIPE, new ShowRecipeHandler());
 		
+		// instantiate the default scene
 		scene = new Scene(mainPane, width, height);
 		scenes.push(scene);
+		
+		// finalize stage formatting
 		primaryStage.setScene(scene);
-	
 		primaryStage.setTitle("Recipe App");
 		primaryStage.show();
 	}
@@ -135,11 +155,18 @@ class Controller {
 			System.out.println("main insertrecipehandler");
 			Recipe recipe = (Recipe) event.getRecipe();
 			
+			/**
+			 * note that the db needs to be connected and closed each
+			 * time it is accessed in order to keep the db file from 
+			 * being locked by another method
+			 */
 			
+			// insert new recipe into database
 			db.reconnect();
 			db.insert_recipe(recipe.name, recipe.write_up, recipe.prepTime, recipe.cookTime, recipe.totalTime, recipe.yield, recipe.ingredients);
 			db.close();
 			
+			// tell mainPane to refresh list of recipes from database
 			db.reconnect();
 			mainPane.showNewRecipe();
 			db.close();
@@ -179,17 +206,23 @@ class Controller {
 // this holds the recipe list view and the buttons
 class MainPane extends BorderPane {
 
+	// nodes managed by this class
 	public Button btAddRecipe = new Button("Add Recipe");
 	public Button btDeleteRecipe = new Button("Delete Recipe");
 	public RecipeListView recipeListView;
 	
-	StackPane pane = new StackPane();
+	
+	private StackPane pane = new StackPane();
 	
 	private double height;
+	
+	// constructor needs a reference to the db and the height of the parent node
 	public MainPane(double height, RecipeDBManager db) {
 		this.height = height;
+		
 		recipeListView = new RecipeListView(height, db);
 		
+		// use an HBox as a container for the buttons
 		HBox hBox = new HBox(15);
 		hBox.setPadding(new Insets(15));
 		hBox.setStyle("-fx-border-color: black");
@@ -197,11 +230,14 @@ class MainPane extends BorderPane {
 		hBox.setAlignment(Pos.CENTER_LEFT);
 		setTop(hBox);
 		
+		// this adds the recipe list view to the StackPane
 		setCenterPane();
 		
-		
+		/**
+		 * Set up local event handlers:
+		 * 	These will be used to fire events up the dispatch chain
+		 */
 		btAddRecipe.setOnAction(e -> addRecipe());
-		
 		btDeleteRecipe.setOnAction(e -> deleteRecipe( db ) );
 		
 	}
@@ -210,9 +246,7 @@ class MainPane extends BorderPane {
 	public void setCenterPane() {
 		pane.getChildren().clear();
 		pane.getChildren().add(recipeListView);
-		
 		setCenter(pane);
-		
 	}
 	
 	// tells controller to switch scenes
@@ -221,6 +255,7 @@ class MainPane extends BorderPane {
 		this.fireEvent(addRecipeEvent);
 	}
 	
+	// deletes recipe after user confirmation
 	private void deleteRecipe( RecipeDBManager db ) {
 		System.out.println("Delete recipe clicked.");
 		db.reconnect();
@@ -247,19 +282,13 @@ class MainPane extends BorderPane {
 		finally {
 			db.close();
 		}
-		
 	}
 	
+	// triggers list view to refresh list from database
 	public void showNewRecipe(  ) {
 		System.out.println("main pane new recipe");
-		//
-		//recipeListView.addRecipeToView(recipe);
 		recipeListView.refresh();
 	}
-	
-	
-	
-	
 }
 
 

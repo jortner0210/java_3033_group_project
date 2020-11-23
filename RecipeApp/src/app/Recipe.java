@@ -3,6 +3,7 @@ package app;
 import java.util.ArrayList;
 import java.util.List;
 
+// stores data for a single recipe
 public class Recipe {
 
 	public int id;
@@ -22,6 +23,7 @@ public class Recipe {
 				   String write_up, String prep, 
 				   String cook, String total_time, 
 				   String yield, ArrayList<Ingredient> ingredients ) {
+		// set instance variables
 		this.id = id;
 		this.name = name;
 		this.write_up = write_up;
@@ -29,11 +31,14 @@ public class Recipe {
 		this.cookTime = cook;
 		this.totalTime = total_time;
 		this.yield = yield;
+		
+		// instantiate ingredient list with new ingredient objects
 		for ( Ingredient i : ingredients ) {
 			this.ingredients.add( new Ingredient( i.id, i.qty, i.metric, i.name, i.category ) );
 		}
 	}
 	
+	// adds ingredient
 	public int add_ingredient( Ingredient in ) {
 		ingredients.add( in );
 		return ingredients.size();
@@ -43,6 +48,7 @@ public class Recipe {
 		return "id="+id+",name="+name+",write_up="+write_up+",ingredient_count="+ingredients.size()+"\n";
 	}
 	
+	// returns list of ingredient names
 	public List<String> get_ingredients() {
 		ArrayList<String> ingredientsStrings = new ArrayList<String>();
 		for (Ingredient i : ingredients )

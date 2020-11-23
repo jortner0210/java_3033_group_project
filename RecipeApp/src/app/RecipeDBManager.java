@@ -3,17 +3,24 @@ package app;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Manages the recipe database.
+ * Utilizes the DBManager class
+ */
 public class RecipeDBManager {
 	
+	// stores instance of DBManager for connection and utilities
 	DBManager db;
 	String db_name;
 	
+	// set up DBManager
 	public RecipeDBManager( String db_name ) {
 		this.db_name = db_name;
 		db = new DBManager();
 		db.connect_db( db_name );
 	}
 	
+	// reconnects when it was previously closed without needing a new instance of the DBManager
 	public void reconnect() {
 		db.connect_db(db_name);
 	}
@@ -232,7 +239,6 @@ public class RecipeDBManager {
 	
 	public ArrayList<Recipe> get_all_recipes( ) {
 		ArrayList<Recipe> recipes = new ArrayList<>();
-		int i = 0;
 		try {
 			String recipe_select = "SELECT * FROM recipe";
 			ResultSet result = db.execute_query( recipe_select );
