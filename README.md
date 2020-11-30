@@ -31,3 +31,19 @@ You will need the correct JavaFX SDK for your operating system. JavaFX allows ap
 9. Browse to find the directory you created in step 2, navigate to the ```lib``` subdirectory, and select all of the ```.jar``` files and add them to your User Library.
 
 10. Click ```Apply and Close``` and save all options. The process is complete and you can now run JavaFX.
+
+## SQLite Java Driver Setup
+
+1. Download SQLite connector jar file: https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.32.3.2/
+
+2. Open Eclipse and create folder within project called "libs."
+
+3. Copy the jar file into the libs folder
+
+4. Right click the project, select "Build Path" then "Configure Build Path"
+
+5. In the Libraries section select "Classpath" and "Add Jars"
+
+6. Select the jar file from the libs folder
+
+7. If project has a module-info.java file, add "requires java.sql"
